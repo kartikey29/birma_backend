@@ -14,8 +14,6 @@ const app = express();
 const cors = require("cors");
 const favicon = require("serve-favicon");
 const morgan = require("morgan");
-// const session = require("express-session");
-// const cookieParser = require("cookie-parser");
 const path = require("path");
 
 // Environment Path
@@ -23,6 +21,7 @@ require("dotenv").config({ path: "./config.env" });
 
 // Routes
 const categoryRoute = require("./src/route/category.route");
+const personRoute = require("./src/route/person.route");
 
 // Environment Variable
 const port = process.env.PORT;
@@ -39,6 +38,7 @@ app.use(morgan("dev"));
 
 // Calling Routes
 app.use("/api/category", categoryRoute);
+app.use("/api/person", personRoute);
 
 //Restrict Invalid Routes
 app.get("*", (req, res) => {
