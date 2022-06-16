@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const categoriesSchema = new mongoose.Schema({
 	name: {
-		tyoe: String,
+		type: String,
 		required: true,
 	},
 	description: {
@@ -13,4 +13,4 @@ const categoriesSchema = new mongoose.Schema({
 
 const Category = mongoose.model("Category ", categoriesSchema);
 
-module.exports = { Category };
+module.exports = Category;
