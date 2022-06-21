@@ -20,6 +20,8 @@ const path = require("path");
 require("dotenv").config({ path: "./config.env" });
 
 // Routes
+const categoryRoute = require("./src/route/category.route");
+const personRoute = require("./src/route/person.route");
 
 // Environment Variable
 const port = process.env.PORT;
@@ -35,18 +37,20 @@ app.use(cors());
 app.use(morgan("dev"));
 
 // Calling Routes
+app.use("/api/category", categoryRoute);
+app.use("/api/person", personRoute);
 
 //Restrict Invalid Routes
 app.get("*", (req, res) => {
-  console.log("Invalid Page Request");
-  res
-    .send("<h1><i><strong> ( 404 ) Page Not Found , Invalid page request")
-    .status(400);
+	console.log("Invalid Page Request");
+	res
+		.send("<h1><i><strong> ( 404 ) Page Not Found , Invalid page request")
+		.status(400);
 });
 
 /**========================================================================
- *                           Listening Port at 3000
+ *                           Listening Port at 5000
  *========================================================================**/
 app.listen(port, () => {
-  console.log(`server is starting on port ${port}`);
+	console.log(`server is starting on port ${port}`);
 });
