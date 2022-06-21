@@ -14,8 +14,6 @@ const app = express();
 const cors = require("cors");
 const favicon = require("serve-favicon");
 const morgan = require("morgan");
-// const session = require("express-session");
-// const cookieParser = require("cookie-parser");
 const path = require("path");
 
 // Environment Path
