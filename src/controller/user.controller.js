@@ -49,6 +49,13 @@ const addAddress = async (req, res, next) => {
 
 const getUserAddress = async (req, res, next) => {
   try {
+    const personId = req.body;
+    const personAddress = await User.findOne({ personId: personId });
+
+    if (!personAddress) {
+      throw { message: "No address available" };
+    }
+    return res.status(200).send({ personAddress });
   } catch (error) {
     return res.status(500).send(error);
   }
@@ -56,6 +63,13 @@ const getUserAddress = async (req, res, next) => {
 
 const deleteAddress = async (req, res, next) => {
   try {
+    const personId = req.body;
+    const delAdd = await Address.deleteOne({ personId: personId });
+
+    if(!delAdd){
+        throw {message:"No address available"}
+    }
+    return res.status(200).send()
   } catch (error) {
     return res.status(500).send(error);
   }
