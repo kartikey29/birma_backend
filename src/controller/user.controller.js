@@ -4,8 +4,7 @@ const Address = require("../model/address.Model");
 const getUserById = async (req, res, next) => {
   try {
     const { _id } = req.body;
-    const userData = await User.findOne({ _id });
-
+    const userData = await User.findOne({ _id, role: "admin" });
     if (!userData) {
       throw { message: "user doesnt exist" };
     }
@@ -17,17 +16,33 @@ const getUserById = async (req, res, next) => {
 
 const editProfile = async (req, res, next) => {
   try {
-    const { userName, email, personId, role } = req.body;
-    const userData = await User.findOne({ _id }).populate({
-      populate: [],
+    const { _id } = req.body;
+    const fieldsToDelete = [
+      "userName",
+      "email",
+      "password",
+      "personId",
+      "role",
+      "notificationToken",
+    ];
+    const updateFields = _.omit(req.body, fieldsToDelete);
+
+    const user = await User.findByIdAndUpdate(_id, updateFields, {
+      returnOriginal: false,
     });
+    if (!user) {
+      throw { message: "User doesnt exist" };
+    }
+
+    return res.status(200).send(user);
   } catch (error) {
-    return res.status(500).send(error);
+    return res.status(400).send(error);
   }
 };
 
 const addAddress = async (req, res, next) => {
   try {
+    const { street, reference, latitude, longitude } = req.body;
     const addAddressDetail = await Address({
       street,
       reference,
@@ -35,12 +50,20 @@ const addAddress = async (req, res, next) => {
       longitude,
       personId,
     });
-
-    const Address = await addAddressDetail.save();
+    await addAddressDetail.save();
 
     return res.status(200).json({
+      success: true,
       message: "Address successfully uploaded",
-      Address: [Address],
+      data: [
+        {
+          street: addAddressDetail.street,
+          reference: addAddressDetail.reference,
+          latitude: addAddressDetail.latitude,
+          longitude: addAddressDetail.longitude,
+          personId: addAddressDetail.personId,
+        },
+      ],
     });
   } catch (error) {
     return res.status(500).send(error);
@@ -66,10 +89,10 @@ const deleteAddress = async (req, res, next) => {
     const personId = req.body;
     const delAdd = await Address.deleteOne({ personId: personId });
 
-    if(!delAdd){
-        throw {message:"No address available"}
+    if (!delAdd) {
+      throw { message: "No address available" };
     }
-    return res.status(200).send()
+    return res.status(200).json({ message: "Address deleted successfully" });
   } catch (error) {
     return res.status(500).send(error);
   }
