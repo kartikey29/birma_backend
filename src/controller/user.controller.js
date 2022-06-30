@@ -3,7 +3,7 @@ const Address = require("../model/address.Model");
 
 const getUserById = async (req, res, next) => {
   try {
-    const { _id } = req.body;
+    const { _id } = req.query.id;
     const userData = await User.findOne({ _id, role: "admin" });
     if (!userData) {
       throw { message: "user doesnt exist" };
@@ -43,30 +43,31 @@ const editProfile = async (req, res, next) => {
 const addAddress = async (req, res, next) => {
   try {
     const { street, reference, latitude, longitude } = req.body;
-    const addAddressDetail = await Address({
+    const addAddressDetail = await new Address({
       street,
       reference,
       latitude,
       longitude,
-      personId,
     });
     await addAddressDetail.save();
 
     return res.status(200).json({
       success: true,
       message: "Address successfully uploaded",
-      data: [
-        {
-          street: addAddressDetail.street,
-          reference: addAddressDetail.reference,
-          latitude: addAddressDetail.latitude,
-          longitude: addAddressDetail.longitude,
-          personId: addAddressDetail.personId,
-        },
-      ],
+      data: addAddressDetail,
+      // {
+      //   street: addAddressDetail.street,
+      //   reference: addAddressDetail.reference,
+      //   latitude: addAddressDetail.latitude,
+      //   longitude: addAddressDetail.longitude,
+      //   personId: addAddressDetail.personId,
+      // },
     });
   } catch (error) {
-    return res.status(500).send(error);
+    return res.status(500).json({
+      message: "server is not responding",
+      data: [error.message],
+    });
   }
 };
 

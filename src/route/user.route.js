@@ -8,7 +8,7 @@ const {
   deleteAddress,
 } = require("../controller/user.controller");
 
-userRoute.get("/getUserById", getUserById);
+userRoute.get("/getUserById?id=", getUserById);
 
 userRoute.patch("/editProfile", editProfile);
 
