@@ -4,7 +4,7 @@ const addPerson = async (req, res, next) => {
 	try {
 		const { UID, firstName, lastName, phone, image } = req.body;
 
-		const addDetail = await Person({
+		const addDetail = await new Person({
 			UID,
 			firstName,
 			lastName,
@@ -21,7 +21,7 @@ const addPerson = async (req, res, next) => {
 			data: [Data],
 		});
 	} catch (error) {
-		return res.status(504).json({ errro: "Server is not responding " });
+		return res.status(504).json({ error: "Server is not responding " });
 	}
 };
 
