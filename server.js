@@ -22,8 +22,8 @@ require("dotenv").config({ path: "./config.env" });
 
 // Routes
 const categoryRoute = require("./src/route/category.route");
-const personRoute = require("./src/route/person.route");
 const userRoute = require("./src/route/user.route");
+const productRoute = require("./src/route/product.route");
 
 // Environment Variable
 const port = process.env.PORT;
@@ -40,14 +40,8 @@ app.use(cors());
 app.use(helmet());
 app.use(morgan("dev"));
 
-// Routes
-const categoryRoute = require("./src/route/category.route");
-const personRoute = require("./src/route/person.route");
-const productRoute = require("./src/route/product.route");
-
 // Calling Routes
 app.use("/api/category", categoryRoute);
-app.use("/api/person", personRoute);
 app.use("/api/user", userRoute);
 app.use("/api/product", productRoute);
 
