@@ -127,7 +127,7 @@ const editProfile = async (req, res, next) => {
 const addAddress = async (req, res, next) => {
   try {
     const { street, reference, latitude, longitude, userId } = req.body;
-    const addAddressDetail = await new Address({
+    const addAddressDetail = new Address({
       street,
       reference,
       latitude,
