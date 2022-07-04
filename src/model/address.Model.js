@@ -17,9 +17,9 @@ const addressSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  personId: {
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Person",
+    ref: "User",
   },
 });
 

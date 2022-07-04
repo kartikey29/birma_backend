@@ -1,6 +1,8 @@
 const userRoute = require("express").Router();
 
 const {
+  addUser,
+  getAllUser,
   getUserById,
   editProfile,
   addAddress,
@@ -8,7 +10,11 @@ const {
   deleteAddress,
 } = require("../controller/user.controller");
 
-userRoute.get("/getUserById?id=", getUserById);
+userRoute.post("/addUser", addUser);
+
+userRoute.get("/getAllUser", getAllUser);
+
+userRoute.get("/getUserById", getUserById);
 
 userRoute.patch("/editProfile", editProfile);
 

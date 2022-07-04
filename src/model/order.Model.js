@@ -4,11 +4,11 @@ const orderSchema = new mongoose.Schema(
   {
     clientID: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Person",
+      ref: "User",
     },
     deliveryId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Person",
+      ref: "User",
     },
     address: {
       type: mongoose.Schema.Types.ObjectId,

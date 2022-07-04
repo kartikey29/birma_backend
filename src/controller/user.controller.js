@@ -1,10 +1,64 @@
 const User = require("../model/user.Model");
 const Address = require("../model/address.Model");
+const _ = require("lodash");
+
+const addUser = async (req, res, next) => {
+  try {
+    const {
+      UID,
+      firstName,
+      lastName,
+      phone,
+      image,
+      state,
+      email,
+      role,
+      notificationToken,
+    } = req.body;
+
+    const addDetail = await new User({
+      UID,
+      firstName,
+      lastName,
+      phone,
+      image,
+      state,
+      email,
+      role,
+      notificationToken,
+    });
+
+    const Data = await addDetail.save();
+
+    return res.status(200).json({
+      success: true,
+      message: " Data Successfully Uploaded",
+      data: Data,
+    });
+  } catch (error) {
+    return res.status(504).json({ error: "Server is not responding " });
+  }
+};
+
+const getAllUser = async (req, res, next) => {
+  try {
+    const fetchedData = await User.find({});
+
+    return res.status(200).json({
+      success: true,
+      message: "Data Fetched SuccessFully ",
+      data: fetchedData,
+    });
+  } catch (error) {
+    return res.status(504).json({ errro: "Server is not responding " });
+  }
+};
 
 const getUserById = async (req, res, next) => {
   try {
-    const { _id } = req.query.id;
-    const userData = await User.findOne({ _id });
+    const { id } = req.query;
+    console.log(id);
+    const userData = await User.findById(id);
     if (!userData) {
       throw { message: "User doesnt exist" };
     }
@@ -23,16 +77,16 @@ const getUserById = async (req, res, next) => {
 const editProfile = async (req, res, next) => {
   try {
     const { _id } = req.body;
+    console.log(req.body);
     const fieldsToDelete = [
-      "userName",
+      "phone",
+      "state",
       "email",
-      "password",
-      "personId",
       "role",
       "notificationToken",
     ];
     const updateFields = _.omit(req.body, fieldsToDelete);
-
+    console.log(updateFields);
     const user = await User.findByIdAndUpdate(_id, updateFields, {
       returnOriginal: false,
     });
@@ -54,19 +108,20 @@ const editProfile = async (req, res, next) => {
 
 const addAddress = async (req, res, next) => {
   try {
-    const { street, reference, latitude, longitude } = req.body;
+    const { street, reference, latitude, longitude, userId } = req.body;
     const addAddressDetail = await new Address({
       street,
       reference,
       latitude,
       longitude,
+      userId,
     });
     await addAddressDetail.save();
 
     return res.status(200).json({
       success: true,
       message: "Address successfully uploaded",
-      data: addAddressDetail
+      data: addAddressDetail,
     });
   } catch (error) {
     return res.status(500).json({
@@ -78,15 +133,15 @@ const addAddress = async (req, res, next) => {
 
 const getUserAddress = async (req, res, next) => {
   try {
-    const personId = req.body;
-    const personAddress = await User.findOne({ personId: personId });
+    const { userId } = req.query;
+    const userAddress = await Address.findOne({ userId: userId });
 
-    if (!personAddress) {
+    if (!userAddress) {
       throw { message: "No address available" };
     }
     return res.status(200).json({
       message: "User Address fetched successfully",
-      data: personAddress,
+      data: userAddress,
     });
   } catch (error) {
     return res.status(500).json({
@@ -98,8 +153,8 @@ const getUserAddress = async (req, res, next) => {
 
 const deleteAddress = async (req, res, next) => {
   try {
-    const personId = req.body;
-    const delAdd = await Address.deleteOne({ personId: personId });
+    const userId = req.body;
+    const delAdd = await Address.deleteOne({ userId: userId });
 
     if (!delAdd) {
       throw { message: "No address available" };
@@ -114,6 +169,8 @@ const deleteAddress = async (req, res, next) => {
 };
 
 module.exports = {
+  addUser,
+  getAllUser,
   getUserById,
   editProfile,
   addAddress,
