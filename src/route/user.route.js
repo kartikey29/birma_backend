@@ -1,5 +1,5 @@
 const userRoute = require("express").Router();
-
+const { verifyToken } = require("../middleware/middleware");
 const {
   addUser,
   getAllUser,
@@ -8,15 +8,18 @@ const {
   addAddress,
   getUserAddress,
   deleteAddress,
+  loginUser,
 } = require("../controller/user.controller");
 
 userRoute.post("/addUser", addUser);
+
+userRoute.post("/login", loginUser);
 
 userRoute.get("/getAllUser", getAllUser);
 
 userRoute.get("/getUserById", getUserById);
 
-userRoute.patch("/editProfile", editProfile);
+userRoute.patch("/editProfile", verifyToken, editProfile);
 
 userRoute.post("/addAddress", addAddress);
 

@@ -2,7 +2,7 @@
  *!    Importing Files
  *========================**/
 const { JWTKEY } = process.env;
-const User = require("../models/User.model");
+const User = require("../model/user.Model");
 const jwt = require("jsonwebtoken");
 
 /**========================================================================
@@ -35,7 +35,7 @@ exports.verifyToken = async (req, res, next) => {
               data: [],
             });
           } else {
-            const checkUser = await User.findOne({ signedToken: token, _id });
+            const checkUser = await User.findOne({ _id });
             if (!checkUser) {
               res.status(400).json({
                 sucess: false,
@@ -43,16 +43,8 @@ exports.verifyToken = async (req, res, next) => {
                 data: [],
               });
             } else {
-              if (checkUser.status !== true) {
-                return res.status(400).json({
-                  success: false,
-                  error: "Admin Blocked You",
-                  data: [],
-                });
-              } else {
-                req.body._id = _id;
-                next();
-              }
+              req.user = checkUser;
+              next();
             }
           }
         }
