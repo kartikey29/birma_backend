@@ -48,6 +48,8 @@ const addUser = async (req, res, next) => {
 
     const Data = await addDetail.save();
 
+    // const user = await User.create()
+
     return res.status(200).json({
       success: true,
       message: " Data Successfully Uploaded",
@@ -60,7 +62,7 @@ const addUser = async (req, res, next) => {
 
 const getAllUser = async (req, res, next) => {
   try {
-    const fetchedData = await User.find({});
+    const fetchedData = await User.find();
 
     return res.status(200).json({
       success: true,
@@ -68,15 +70,14 @@ const getAllUser = async (req, res, next) => {
       data: fetchedData,
     });
   } catch (error) {
-    return res.status(504).json({ errro: "Server is not responding " });
+    return res.status(504).json({ error: "Server is not responding " });
   }
 };
 
 const getUserById = async (req, res, next) => {
   try {
-    const { id } = req.query;
-    console.log(id);
-    const userData = await User.findById(id);
+    const { _id } = req.params;
+    const userData = await User.findById(_id);
     if (!userData) {
       throw { message: "User doesnt exist" };
     }
@@ -134,7 +135,9 @@ const addAddress = async (req, res, next) => {
       longitude,
       userId,
     });
-    await addAddressDetail.save();
+
+    
+    console.log(await addAddressDetail.save());
 
     return res.status(200).json({
       success: true,
@@ -151,8 +154,8 @@ const addAddress = async (req, res, next) => {
 
 const getUserAddress = async (req, res, next) => {
   try {
-    const { userId } = req.query;
-    const userAddress = await Address.findOne({ userId: userId });
+    const { _id } = req.params;
+    const userAddress = await Address.findOne({ _id: _id });
 
     if (!userAddress) {
       throw { message: "No address available" };
@@ -171,13 +174,14 @@ const getUserAddress = async (req, res, next) => {
 
 const deleteAddress = async (req, res, next) => {
   try {
-    const userId = req.body;
-    const delAdd = await Address.deleteOne({ userId: userId });
-
+    const { _id } = req.params;
+    const delAdd = await Address.findByIdAndDelete(_id);
     if (!delAdd) {
       throw { message: "No address available" };
     }
-    return res.status(200).json({ message: "Address deleted successfully" });
+    return res
+      .status(200)
+      .json({ message: "Address deleted successfully", data: delAdd });
   } catch (error) {
     return res.status(500).json({
       message: "Address cannot be deleted",
