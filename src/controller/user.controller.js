@@ -1,6 +1,24 @@
 const User = require("../model/user.Model");
 const Address = require("../model/address.Model");
 const _ = require("lodash");
+const JWT = require("jsonwebtoken");
+
+const loginUser = async (req, res, next) => {
+  try {
+    const { UID } = req.body;
+
+    const user = await User.findOne({ UID });
+
+    if (!user) {
+      throw { message: "user doesnt exist" };
+    }
+
+    const jwt = JWT.sign({ _id: user._id }, process.env.JWTKEY);
+    return res.send({ token: jwt, UID: user.UID });
+  } catch (e) {
+    return res.status(504).send(e);
+  }
+};
 
 const addUser = async (req, res, next) => {
   try {
@@ -16,7 +34,7 @@ const addUser = async (req, res, next) => {
       notificationToken,
     } = req.body;
 
-    const addDetail = await new User({
+    const addDetail = new User({
       UID,
       firstName,
       lastName,
@@ -76,8 +94,8 @@ const getUserById = async (req, res, next) => {
 
 const editProfile = async (req, res, next) => {
   try {
-    const { _id } = req.body;
-    console.log(req.body);
+    const { _id } = req.user;
+
     const fieldsToDelete = [
       "phone",
       "state",
@@ -86,7 +104,7 @@ const editProfile = async (req, res, next) => {
       "notificationToken",
     ];
     const updateFields = _.omit(req.body, fieldsToDelete);
-    console.log(updateFields);
+
     const user = await User.findByIdAndUpdate(_id, updateFields, {
       returnOriginal: false,
     });
@@ -176,4 +194,5 @@ module.exports = {
   addAddress,
   getUserAddress,
   deleteAddress,
+  loginUser,
 };
