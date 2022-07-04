@@ -94,7 +94,7 @@ const getUserById = async (req, res, next) => {
 
 const editProfile = async (req, res, next) => {
   try {
-    const { _id } = req.user;
+    const { _id } = req.body;
 
     const fieldsToDelete = [
       "phone",
