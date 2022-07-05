@@ -3,11 +3,12 @@ const Address = require("../model/address.Model");
 const _ = require("lodash");
 const JWT = require("jsonwebtoken");
 
-const loginUser = async (req, res, next) => {
+//user login 
+const loginUser = async (req, res, next) => { 
   try {
     const { UID } = req.body;
 
-    const user = await User.findOne({ UID });
+    const user = await User.findOne({ UID });//find user by UID
 
     if (!user) {
       throw { message: "user doesnt exist" };
@@ -20,6 +21,7 @@ const loginUser = async (req, res, next) => {
   }
 };
 
+//Adding user to database
 const addUser = async (req, res, next) => {
   try {
     const {
@@ -60,6 +62,7 @@ const addUser = async (req, res, next) => {
   }
 };
 
+//get All the user from database
 const getAllUser = async (req, res, next) => {
   try {
     const fetchedData = await User.find();
@@ -74,6 +77,7 @@ const getAllUser = async (req, res, next) => {
   }
 };
 
+// find the user by Id 
 const getUserById = async (req, res, next) => {
   try {
     const { _id } = req.params;
@@ -93,18 +97,20 @@ const getUserById = async (req, res, next) => {
   }
 };
 
+//update the user by id
 const editProfile = async (req, res, next) => {
   try {
     const { _id } = req.body;
-
+    console.log(req.body)
     const fieldsToDelete = [
-      "phone",
+      "UID",
+      "firstName",
+      "lastName",
       "state",
-      "email",
       "role",
       "notificationToken",
     ];
-    const updateFields = _.omit(req.body, fieldsToDelete);
+    const updateFields = _.omit(req.body, fieldsToDelete);//filter the fields to be updated 
 
     const user = await User.findByIdAndUpdate(_id, updateFields, {
       returnOriginal: false,
@@ -125,6 +131,7 @@ const editProfile = async (req, res, next) => {
   }
 };
 
+//add user address
 const addAddress = async (req, res, next) => {
   try {
     const { street, reference, latitude, longitude, userId } = req.body;
@@ -152,6 +159,7 @@ const addAddress = async (req, res, next) => {
   }
 };
 
+//fetch user address from the database
 const getUserAddress = async (req, res, next) => {
   try {
     const { _id } = req.params;
@@ -172,6 +180,7 @@ const getUserAddress = async (req, res, next) => {
   }
 };
 
+//delete user address from the database
 const deleteAddress = async (req, res, next) => {
   try {
     const { _id } = req.params;

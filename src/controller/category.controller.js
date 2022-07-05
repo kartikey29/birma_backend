@@ -12,17 +12,11 @@ const postCategory = async (req, res, next) => {
 	return res.status(200).json({
 		success: true,
 		message: "Data Inserted Successfully",
-		data: [
-			{
-				_id: insertData._id,
-				Name: insertData.name,
-				Description: insertData.description,
-			},
-		],
+		data: insertData,
 	});
 };
 
-const getCategory = async (req, res, next) => {
+const getAllCategory = async (req, res, next) => {
 	const fetchData = await Category.find({});
 
 	return res.status(200).json({
@@ -32,4 +26,4 @@ const getCategory = async (req, res, next) => {
 	});
 };
 
-module.exports = { postCategory, getCategory };
+module.exports = { postCategory, getAllCategory };

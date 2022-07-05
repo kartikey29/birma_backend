@@ -2,10 +2,10 @@ const categoryRoute = require("express").Router();
 
 const {
 	postCategory,
-	getCategory,
+	getAllCategory,
 } = require("../controller/category.controller");
 
-categoryRoute.get("/category", getCategory);
+categoryRoute.get("/getAllCategory", getAllCategory);
 
 categoryRoute.post("/insert-category", postCategory);
 

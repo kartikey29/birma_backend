@@ -24,6 +24,7 @@ require("dotenv").config({ path: "./config.env" });
 const categoryRoute = require("./src/route/category.route");
 const userRoute = require("./src/route/user.route");
 const productRoute = require("./src/route/product.route");
+const orderRoute = require('./src/route/order.route');
 
 // Environment Variable
 const port = process.env.PORT;
@@ -44,6 +45,8 @@ app.use(morgan("dev"));
 app.use("/api/category", categoryRoute);
 app.use("/api/user", userRoute);
 app.use("/api/product", productRoute);
+app.use("/api/order", orderRoute);
+
 
 //Restrict Invalid Routes
 app.get("*", (req, res) => {
