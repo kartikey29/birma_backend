@@ -52,11 +52,11 @@ const addUser = async (req, res, next) => {
 
     return res.status(200).json({
       success: true,
-      message: " Data Successfully Uploaded",
+      message: "Data Successfully Uploaded",
       data: Data,
     });
   } catch (error) {
-    return res.status(504).json({ error: "Server is not responding " });
+    return res.status(504).send(error);
   }
 };
 
@@ -136,7 +136,6 @@ const addAddress = async (req, res, next) => {
       userId,
     });
 
-    
     console.log(await addAddressDetail.save());
 
     return res.status(200).json({
