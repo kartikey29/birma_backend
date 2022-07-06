@@ -3,18 +3,21 @@ const Address = require("../model/address.Model");
 const _ = require("lodash");
 const JWT = require("jsonwebtoken");
 
-//user login 
-const loginUser = async (req, res, next) => { 
+//user login
+const loginUser = async (req, res, next) => {
   try {
     const { UID } = req.body;
 
-    const user = await User.findOne({ UID });//find user by UID
+    const user = await User.findOne({ UID }); //find user by UID
 
     if (!user) {
       throw { message: "user doesnt exist" };
     }
 
     const jwt = JWT.sign({ _id: user._id }, process.env.JWTKEY);
+    Object.assign(user, { token: jwt });
+
+    await user.save();
     return res.send({ token: jwt, UID: user.UID });
   } catch (e) {
     return res.status(504).send(e);
@@ -77,11 +80,12 @@ const getAllUser = async (req, res, next) => {
   }
 };
 
-// find the user by Id 
+// find the user by Id
 const getUserById = async (req, res, next) => {
   try {
-    const { _id } = req.params;
-    const userData = await User.findById(_id);
+    // console.log(req.user.token);
+    const userData = await User.findOne({ token: req.user.token }); //finding the user by token
+    // console.log(userData);
     if (!userData) {
       throw { message: "User doesnt exist" };
     }
@@ -101,7 +105,7 @@ const getUserById = async (req, res, next) => {
 const editProfile = async (req, res, next) => {
   try {
     const { _id } = req.body;
-    console.log(req.body)
+    console.log(req.body);
     const fieldsToDelete = [
       "UID",
       "firstName",
@@ -110,7 +114,7 @@ const editProfile = async (req, res, next) => {
       "role",
       "notificationToken",
     ];
-    const updateFields = _.omit(req.body, fieldsToDelete);//filter the fields to be updated 
+    const updateFields = _.omit(req.body, fieldsToDelete); //filter the fields to be updated
 
     const user = await User.findByIdAndUpdate(_id, updateFields, {
       returnOriginal: false,
@@ -143,7 +147,6 @@ const addAddress = async (req, res, next) => {
       userId,
     });
 
-    
     console.log(await addAddressDetail.save());
 
     return res.status(200).json({

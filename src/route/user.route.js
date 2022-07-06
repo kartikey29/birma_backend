@@ -51,7 +51,7 @@ userRoute.post("/login", loginUser);
 
 userRoute.get("/getAllUser", getAllUser);
 
-userRoute.get("/getUserById/:_id", getUserById);
+userRoute.get("/getUserById", verifyToken, getUserById);
 
 userRoute.patch("/editProfile", verifyToken, editProfile);
 
