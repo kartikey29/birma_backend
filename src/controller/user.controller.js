@@ -27,38 +27,16 @@ const loginUser = async (req, res, next) => {
 //Adding user to database
 const addUser = async (req, res, next) => {
   try {
-    const {
-      UID,
-      firstName,
-      lastName,
-      phone,
-      image,
-      state,
-      email,
-      role,
-      notificationToken,
-    } = req.body;
-
-    const addDetail = new User({
-      UID,
-      firstName,
-      lastName,
-      phone,
-      image,
-      state,
-      email,
-      role,
-      notificationToken,
-    });
-
-    const Data = await addDetail.save();
-
-    // const user = await User.create()
-
+  
+    image = req.file.path;
+    req.body.image = image;
+    console.log(req.body);
+    const user = await User.create(req.body);
+    console.log(user);
     return res.status(200).json({
       success: true,
       message: " Data Successfully Uploaded",
-      data: Data,
+      data: user,
     });
   } catch (error) {
     return res.status(504).json({ error: "Server is not responding " });

@@ -14,7 +14,7 @@ const {
   loginUser,
 } = require("../controller/user.controller");
 
-userRoute.post("/addUser", addUser);
+userRoute.post("/addUser", upload.single('image'), addUser);
 
 userRoute.post("/login", loginUser);
 
