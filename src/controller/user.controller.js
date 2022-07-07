@@ -3,63 +3,46 @@ const Address = require("../model/address.Model");
 const _ = require("lodash");
 const JWT = require("jsonwebtoken");
 
+//user login
 const loginUser = async (req, res, next) => {
   try {
     const { UID } = req.body;
 
-    const user = await User.findOne({ UID });
+    const user = await User.findOne({ UID }); //find user by UID
 
     if (!user) {
       throw { message: "user doesnt exist" };
     }
 
     const jwt = JWT.sign({ _id: user._id }, process.env.JWTKEY);
+    Object.assign(user, { token: jwt });
+
+    await user.save();
     return res.send({ token: jwt, UID: user.UID });
   } catch (e) {
     return res.status(504).send(e);
   }
 };
 
+//Adding user to database
 const addUser = async (req, res, next) => {
   try {
-    const {
-      UID,
-      firstName,
-      lastName,
-      phone,
-      image,
-      state,
-      email,
-      role,
-      notificationToken,
-    } = req.body;
-
-    const addDetail = new User({
-      UID,
-      firstName,
-      lastName,
-      phone,
-      image,
-      state,
-      email,
-      role,
-      notificationToken,
-    });
-
-    const Data = await addDetail.save();
-
-    // const user = await User.create()
-
+    image = req.file.path;
+    req.body.image = image;
+    console.log(req.body);
+    const user = await User.create(req.body);
+    console.log(user);
     return res.status(200).json({
       success: true,
-      message: "Data Successfully Uploaded",
-      data: Data,
+      message: " Data Successfully Uploaded",
+      data: user,
     });
   } catch (error) {
     return res.status(504).send(error);
   }
 };
 
+//get All the user from database
 const getAllUser = async (req, res, next) => {
   try {
     const fetchedData = await User.find();
@@ -74,10 +57,12 @@ const getAllUser = async (req, res, next) => {
   }
 };
 
+// find the user by Id
 const getUserById = async (req, res, next) => {
   try {
-    const { _id } = req.params;
-    const userData = await User.findById(_id);
+    // console.log(req.user.token);
+    const userData = await User.findOne({ token: req.user.token }); //finding the user by token
+    // console.log(userData);
     if (!userData) {
       throw { message: "User doesnt exist" };
     }
@@ -93,18 +78,20 @@ const getUserById = async (req, res, next) => {
   }
 };
 
+//update the user by id
 const editProfile = async (req, res, next) => {
   try {
     const { _id } = req.body;
-
+    console.log(req.body);
     const fieldsToDelete = [
-      "phone",
+      "UID",
+      "firstName",
+      "lastName",
       "state",
-      "email",
       "role",
       "notificationToken",
     ];
-    const updateFields = _.omit(req.body, fieldsToDelete);
+    const updateFields = _.omit(req.body, fieldsToDelete); //filter the fields to be updated
 
     const user = await User.findByIdAndUpdate(_id, updateFields, {
       returnOriginal: false,
@@ -125,6 +112,7 @@ const editProfile = async (req, res, next) => {
   }
 };
 
+//add user address
 const addAddress = async (req, res, next) => {
   try {
     const { street, reference, latitude, longitude, userId } = req.body;
@@ -151,6 +139,7 @@ const addAddress = async (req, res, next) => {
   }
 };
 
+//fetch user address from the database
 const getUserAddress = async (req, res, next) => {
   try {
     const { _id } = req.params;
@@ -171,6 +160,7 @@ const getUserAddress = async (req, res, next) => {
   }
 };
 
+//delete user address from the database
 const deleteAddress = async (req, res, next) => {
   try {
     const { _id } = req.params;

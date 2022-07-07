@@ -33,13 +33,17 @@ const userSchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
     },
-    role: {
+    role_Id: {
       type: String,
-      enum: ["admin", "client", "delivery"],
+      enum: ["1", "2", "3", "4"], // 1- client(customer),2-biker(delivery person),3-seller,4-Admin
+      default: "1",
     },
     notificationToken: {
       type: String,
       default: "",
+    },
+    token: {
+      type: String,
     },
   },
   { timestamps: true }
