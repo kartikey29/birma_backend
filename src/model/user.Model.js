@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema(
     },
     role_Id: {
       type: String,
-      enum: ["1", "2", "3", "4"],
+      enum: ["1", "2", "3", "4"], // 1- client(customer),2-biker(delivery person),3-seller,4-Admin
       default: "1",
     },
     notificationToken: {
