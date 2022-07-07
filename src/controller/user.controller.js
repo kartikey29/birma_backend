@@ -27,17 +27,21 @@ const loginUser = async (req, res, next) => {
 //Adding user to database
 const addUser = async (req, res, next) => {
   try {
-  
     image = req.file.path;
     req.body.image = image;
     console.log(req.body);
-    const user = await User.create(req.body);
-    console.log(user);
-    return res.status(200).json({
-      success: true,
-      message: " Data Successfully Uploaded",
-      data: user,
-    });
+    const checkEmail = await User.findOne({ email: req.body.email });
+    if (!checkEmail) {
+      const user = await User.create(req.body);
+      console.log(user);
+      return res.status(200).json({
+        success: true,
+        message: " Data Successfully Uploaded",
+        data: user,
+      });
+    } else {
+      res.status(409).json({ error: "Email already exists" });
+    }
   } catch (error) {
     return res.status(504).json({ error: "Server is not responding " });
   }
