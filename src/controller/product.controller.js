@@ -40,8 +40,15 @@ const refreshProductList = async (req, res) => {
   }
 };
 
-const getProducts = async (req, res) => {
+const getAllProducts = async (req, res) => {
   try {
+    const { page } = req.query;
+    const options = {
+      page: page,
+      limit: 20,
+    };
+    const allProductData = await Product.paginate({}, options);
+    return res.send(allProductData);
   } catch (e) {
     return res.status(504).send(e);
   }
@@ -139,4 +146,4 @@ const getProducts = async (req, res) => {
 //   const data = await Product.findOne({});
 // };
 
-module.exports = { getProducts, refreshProductList };
+module.exports = { getAllProducts, refreshProductList };

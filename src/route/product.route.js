@@ -2,7 +2,7 @@ const productRoute = require("express").Router();
 const upload = require("../utils/personImage");
 
 const {
-  getProducts,
+  getAllProducts,
   refreshProductList,
 } = require("../controller/product.controller");
 
@@ -15,6 +15,6 @@ const {
 productRoute.get("/refreshProductList", refreshProductList);
 
 // Get All Product
-productRoute.get("/products", getProducts);
+productRoute.get("/getAllProducts", getAllProducts);
 
 module.exports = productRoute;
