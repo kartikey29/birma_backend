@@ -27,7 +27,10 @@ const loginUser = async (req, res, next) => {
 //Adding user to database
 const addUser = async (req, res) => {
   try {
-    req.body.image = req.file === undefined ? "" : req.file.path;
+    req.body.image =
+      req.file === undefined
+        ? ""
+        : `${process.env.BACKEND_URL}userImage/${req.file.filename}`;
 
     const user = await User.create(req.body);
 
