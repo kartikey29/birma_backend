@@ -2,6 +2,14 @@ const Product = require("../model/product.Model");
 
 const gSheetApiConfig = require("../utils/gSheet");
 
+const getOptions = (page) => {
+  const options = {
+    page: page,
+    limit: 20,
+  };
+  return options;
+};
+
 const refreshProductList = async (req, res) => {
   try {
     const deletedCount = await Product.deleteMany({});
@@ -42,10 +50,19 @@ const refreshProductList = async (req, res) => {
 
 const getProducts = async (req, res) => {
   try {
-    const { page } = req.query;
+    const { page, search } = req.query;
+    console.log(page, search);
+    let searchClause = {};
+    if (search) {
+      searchClause = { $text: { $search: search } };
+    }
+    const options = getOptions(page);
+
+    const allProductData = await Product.paginate(searchClause, options);
+    return res.send(allProductData);
   } catch (e) {
     return res.status(504).send(e);
   }
 };
 
-module.exports = { getProducts, refreshProductList };
+module.exports = { refreshProductList, getProducts };
