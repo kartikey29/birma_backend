@@ -21,7 +21,6 @@ const helmet = require("helmet");
 require("dotenv").config({ path: "./config.env" });
 
 // Routes
-const categoryRoute = require("./src/route/category.route");
 const userRoute = require("./src/route/user.route");
 const productRoute = require("./src/route/product.route");
 const orderRoute = require('./src/route/order.route');
@@ -43,7 +42,6 @@ app.use(helmet());
 app.use(morgan("dev"));
 
 // Calling Routes
-app.use("/api/category", categoryRoute);
 app.use("/api/user", userRoute);
 app.use("/api/product", productRoute);
 app.use("/api/order", orderRoute);

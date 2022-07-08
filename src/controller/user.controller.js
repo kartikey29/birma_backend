@@ -83,15 +83,16 @@ const getUserById = async (req, res, next) => {
 //update the user by id
 const editProfile = async (req, res, next) => {
   try {
+    console.log(req.user);
     const { _id } = req.user;
     console.log(req.body);
     const fieldsToDelete = [
       "UID",
-      "firstName",
-      "lastName",
+      "phone",
       "state",
-      "role",
+      "role_Id",
       "notificationToken",
+      "token",
     ];
     const updateFields = _.omit(req.body, fieldsToDelete); //filter the fields to be updated
 
