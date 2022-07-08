@@ -30,7 +30,7 @@ const addUser = async (req, res) => {
     req.body.image =
       req.file === undefined
         ? ""
-        : `${process.env.BACKEND_URL}userImage/${req.file.filename}`;
+        : `${process.env.BACKEND_URL}userImages/${req.file.filename}`;
 
     const user = await User.create(req.body);
 
