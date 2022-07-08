@@ -147,9 +147,9 @@ const addAddress = async (req, res, next) => {
 //fetch user address from the database
 const getUserAddress = async (req, res, next) => {
   try {
-    const { _id } = req.params;
-    const userAddress = await Address.findOne({ userId: _id });
-
+    //console.log(req.user._id);
+    const userAddress = await Address.findOne({ userId: req.user._id });
+    console.log(userAddress);
     if (!userAddress) {
       throw { message: "No address available" };
     }
