@@ -1,17 +1,20 @@
-// const Product = require("../model/product.Model");
+const Product = require("../model/product.Model");
 
 const gSheetApiConfig = require("../utils/gSheet");
 
-const getProducts = async (req, res) => {
+const refreshProductList = async (req, res) => {
   try {
+    const deletedCount = await Product.deleteMany({});
+    console.log(deletedCount);
     const { googleSheetsInstance, auth } = await gSheetApiConfig();
     const readData = await googleSheetsInstance.spreadsheets.values.get({
       auth, //auth object
       spreadsheetId: process.env.spreadsheetId, // spreadsheet id
       range: "products", //range of cells to read from.
     });
-    const arrayOfObject = readData.data.values.map((element) => {
-      const object = {
+    readData.data.values.splice(0, 1);
+    readData.data.values.map(async (element) => {
+      const object = new Product({
         Category: element[0],
         BrandName: element[1],
         ItemName: element[2],
@@ -21,18 +24,24 @@ const getProducts = async (req, res) => {
         MaximumRetailPrice: element[6],
         OurPrice: element[7],
         ProductLink: element[8],
-        IMG1: element[9],
-        IMG2: element[10],
-        IMG3: element[11],
-        IMG4: element[12],
-        IMG5: element[13],
-      };
-      return object;
+        Images: [
+          element[9],
+          element[10],
+          element[11],
+          element[12],
+          element[13],
+        ],
+      });
+      await object.save();
     });
+    return res.send({ message: "Product list refreshed" });
+  } catch (e) {
+    return res.status(504).send(e);
+  }
+};
 
-    arrayOfObject.splice(0, 1);
-
-    res.send(arrayOfObject);
+const getProducts = async (req, res) => {
+  try {
   } catch (e) {
     return res.status(504).send(e);
   }
@@ -130,4 +139,4 @@ const getProducts = async (req, res) => {
 //   const data = await Product.findOne({});
 // };
 
-module.exports = { getProducts };
+module.exports = { getProducts, refreshProductList };

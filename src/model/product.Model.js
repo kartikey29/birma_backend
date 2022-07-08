@@ -7,38 +7,43 @@ Schema = mongoose.Schema;
 // });
 
 const productSchema = new mongoose.Schema(
-	{
-		productName: {
-			type: String,
-			required: true,
-		},
-		description: {
-			required: true,
-			type: String,
-		},
-		price: {
-			type: Number,
-			required: true,
-		},
-		status: {
-			type: Boolean,
-			default: false,
-		},
-		media: {
-			type: [],
-			required: [true, "Uploaded file must have a name & extension"],
-		},
-		CategoryId: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "Category",
-			required: true,
-		},
-	},
-	{
-		timestamps: true,
-		toObject: { getters: true },
-		toJSON: { getters: true },
-	},
+  {
+    Category: {
+      type: String,
+    },
+    BrandName: {
+      type: String,
+    },
+    ItemName: {
+      type: String,
+    },
+    TITLE: {
+      type: String,
+    },
+    ProductDescription: {
+      type: String,
+    },
+    TechnicalSpecifications: {
+      type: String,
+    },
+    MaximumRetailPrice: {
+      type: String,
+    },
+    OurPrice: {
+      type: String,
+    },
+    ProductLink: {
+      type: String,
+    },
+    Images: {
+      type: [],
+    },
+  },
+  {
+    timestamps: true,
+    toObject: { getters: true },
+    toJSON: { getters: true },
+  }
 );
 
 const Product = mongoose.model("Product", productSchema);
