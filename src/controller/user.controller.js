@@ -27,25 +27,48 @@ const loginUser = async (req, res, next) => {
 //Adding user to database
 const addUser = async (req, res, next) => {
   try {
-    image = req.file.path;
-    req.body.image = image;
-    console.log(req.body);
-    const uid = await User.findOne({ UID: req.body.UID });
-    if (!uid) {
-      const checkEmail = await User.findOne({ email: req.body.email });
-      if (!checkEmail) {
-        const user = await User.create(req.body);
-        console.log(user);
-        return res.status(200).json({
-          success: true,
-          message: " Data Successfully Uploaded",
-          data: user,
-        });
+    if (!req.file) {
+      const uid = await User.findOne({ UID: req.body.UID });
+      // console.log(uid);
+      if (!uid) {
+        const checkEmail = await User.findOne({ email: req.body.email });
+        if (!checkEmail) {
+          const user = await User.create(req.body);
+          // console.log(user);
+          return res.status(200).json({
+            success: true,
+            message: " Data Successfully Uploaded",
+            data: user,
+          });
+        } else {
+          res.status(409).json({ error: "Email already exists" });
+        }
       } else {
-        res.status(409).json({ error: "Email already exists" });
+        res.status(409).json({ error: "UID already exists" });
       }
     } else {
-      res.status(409).json({ error: "UID already exists" });
+      //console.log(UID);
+      image = req.file.path;
+      req.body.image = image;
+      // console.log(req.body);
+      const uid = await User.findOne({ UID: req.body.UID });
+      // console.log(uid);
+      if (!uid) {
+        const checkEmail = await User.findOne({ email: req.body.email });
+        if (!checkEmail) {
+          const user = await User.create(req.body);
+          // console.log(user);
+          return res.status(200).json({
+            success: true,
+            message: " Data Successfully Uploaded",
+            data: user,
+          });
+        } else {
+          res.status(409).json({ error: "Email already exists" });
+        }
+      } else {
+        res.status(409).json({ error: "UID already exists" });
+      }
     }
   } catch (error) {
     return res.status(504).json({ error: "Server is not responding " });
