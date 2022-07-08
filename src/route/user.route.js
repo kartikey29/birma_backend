@@ -13,6 +13,7 @@ const {
   deleteAddress,
   loginUser,
 } = require("../controller/user.controller");
+const { verify } = require("jsonwebtoken");
 
 userRoute.post("/addUser", upload.single('image'), addUser);
 
@@ -29,9 +30,9 @@ userRoute.patch(
   editProfile
 );
 
-userRoute.post("/addAddress", addAddress);
+userRoute.post("/addAddress", verifyToken , addAddress);
 
-userRoute.get("/getUserAddress/:_id", getUserAddress);
+userRoute.get("/getUserAddress/:_id",verifyToken, getUserAddress);
 
 userRoute.delete("/deleteAddress/:_id", deleteAddress);
 

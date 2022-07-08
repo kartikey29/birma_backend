@@ -117,7 +117,10 @@ const editProfile = async (req, res, next) => {
 //add user address
 const addAddress = async (req, res, next) => {
   try {
+   req.body.userId = req.user._id;
     const { street, reference, latitude, longitude, userId } = req.body;
+    //userId = req.user.UID;
+    //console.log(userId);
     const addAddressDetail = new Address({
       street,
       reference,
@@ -126,7 +129,7 @@ const addAddress = async (req, res, next) => {
       userId,
     });
 
-    console.log(await addAddressDetail.save());
+    await addAddressDetail.save();
 
     return res.status(200).json({
       success: true,
@@ -145,7 +148,7 @@ const addAddress = async (req, res, next) => {
 const getUserAddress = async (req, res, next) => {
   try {
     const { _id } = req.params;
-    const userAddress = await Address.findOne({ _id: _id });
+    const userAddress = await Address.findOne({ userId: _id });
 
     if (!userAddress) {
       throw { message: "No address available" };
