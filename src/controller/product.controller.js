@@ -6,6 +6,9 @@ const getOptions = (page) => {
   const options = {
     page: page,
     limit: 20,
+    sort: {
+      createdAt: -1,
+    },
   };
   return options;
 };
