@@ -4,7 +4,7 @@ const hash = require("random-hash");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "../../public/product"));
+    cb(null, path.join(__dirname, "../../public/userImages"));
   },
   filename: function (req, file, cb) {
     let temp = file.originalname.split(".");
