@@ -25,20 +25,19 @@ const loginUser = async (req, res, next) => {
 };
 
 //Adding user to database
-const addUser = async (req, res, next) => {
+const addUser = async (req, res) => {
   try {
-    image = req.file.path;
-    req.body.image = image;
-    console.log(req.body);
+    req.body.image = req.file === undefined ? "" : req.file.path;
+
     const user = await User.create(req.body);
-    console.log(user);
+
     return res.status(200).json({
       success: true,
       message: " Data Successfully Uploaded",
       data: user,
     });
   } catch (error) {
-    return res.status(504).send(error);
+    return res.status(504).json(error);
   }
 };
 
@@ -81,7 +80,7 @@ const getUserById = async (req, res, next) => {
 //update the user by id
 const editProfile = async (req, res, next) => {
   try {
-    const { _id } = req.body;
+    const { _id } = req.user;
     console.log(req.body);
     const fieldsToDelete = [
       "UID",
