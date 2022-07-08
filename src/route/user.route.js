@@ -32,7 +32,7 @@ userRoute.patch(
 
 userRoute.post("/addAddress", verifyToken , addAddress);
 
-userRoute.get("/getUserAddress/:_id",verifyToken, getUserAddress);
+userRoute.get("/getUserAddress",verifyToken, getUserAddress);
 
 userRoute.delete("/deleteAddress/:_id", deleteAddress);
 
