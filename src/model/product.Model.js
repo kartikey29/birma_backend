@@ -49,6 +49,7 @@ const productSchema = new mongoose.Schema(
 
 productSchema.plugin(mongoosePaginate);
 
+productSchema.index({ name: "text", title: "text" });
 const Product = mongoose.model("Product", productSchema);
 
 module.exports = Product;
