@@ -24,6 +24,8 @@ const refreshProductList = async (req, res) => {
       range: "products", //range of cells to read from.
     });
     readData.data.values.splice(0, 1);
+
+    //maping data to json as it comes in text array
     readData.data.values.map(async (element) => {
       const object = new Product({
         Category: element[0],
@@ -54,7 +56,6 @@ const refreshProductList = async (req, res) => {
 const getProducts = async (req, res) => {
   try {
     const { page, search } = req.query;
-    console.log(page, search);
     let searchClause = {};
     if (search) {
       searchClause = { $text: { $search: search } };

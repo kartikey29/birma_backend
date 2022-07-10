@@ -2,11 +2,6 @@ const mongoose = require("mongoose");
 const mongoosePaginate = require("mongoose-paginate-v2");
 Schema = mongoose.Schema;
 
-// const MediaSchema = new Schema({
-// 	url: String,
-// 	type: { type: String, enum: ["image"] },
-// });
-
 const productSchema = new mongoose.Schema(
   {
     Category: {
