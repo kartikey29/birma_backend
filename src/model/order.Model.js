@@ -27,10 +27,6 @@ const orderSchema = new mongoose.Schema(
       type: String,
       default: "PAID OUT",
     },
-    receipt: {
-      type: String,
-      required: true,
-    },
     amount: {
       type: Number,
       required: true,
@@ -39,6 +35,22 @@ const orderSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    products: [
+      {
+        productId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+        },
+        quantity: {
+          type: Number,
+          required: true,
+        },
+        price: {
+          type: Number,
+          required: true,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );
