@@ -1,15 +1,36 @@
 const Order = require("../model/order.Model");
+const User = require('../model/user.Model');
 
-const OrderDetail = require("../model/orderDetail.Model");
+//const OrderDetail = require("../model/orderDetail.Model");
+const { options } = require("../route/user.route");
+
+const getOptions = (page) => {
+  const options = {
+    page: page,
+    limit: 20,
+    sort: {
+      createdAt: -1,
+    },
+  };
+  return options;
+};
 
 //create an order
 const addOrder = async (req, res, next) => {
   try {
-    const insertData = await Order.create(req.body);
-    return res.status(200).json({
-      message: "Order created successfully",
-      data: insertData,
-    });
+    //console.log(req.body);
+    const { clientId } = req.body;
+    const checkUserId = await User.findById(clientId);
+    if (checkUserId) {
+      const insertData = await Order.create(req.body);
+      return res.status(200).json({
+        message: "Order created successfully",
+        data: insertData,
+      });
+    }
+    else {
+      return res.status(404).json({ message: "clientId not found" });
+    }
   } catch (error) {
     return res.status(500).json({
       message: "Server not responding",
@@ -17,6 +38,22 @@ const addOrder = async (req, res, next) => {
     });
   }
 };
+
+const getAllOrders = async (req, res) => {
+  try {
+    const { page, search } = req.query;
+    console.log(page, search);
+    let searchClause = {};
+    if (search) {
+      searchClause = { $text: { $search: search } };
+    }
+    const options = getOptions(page);
+    const getOrders = await Order.paginate(searchClause, options)
+    return res.send(getOrders);
+  } catch (e) {
+    return res.status(504).send(e);
+  }
+}
 
 //get an order by unique ID
 const getOrderById = async (req, res, next) => {
@@ -75,4 +112,4 @@ const deleteOrder = async (req, res, next) => {
   }
 };
 
-module.exports = { getOrderById, addOrder, editOrder, deleteOrder };
+module.exports = { getOrderById, addOrder, editOrder, deleteOrder, getAllOrders };
