@@ -1,18 +1,6 @@
 const Order = require("../model/order.Model");
 
 const OrderDetail = require("../model/orderDetail.Model");
-const { options } = require("../route/user.route");
-
-const getOptions = (page) => {
-  const options = {
-    page: page,
-    limit: 20,
-    sort: {
-      createdAt: -1,
-    },
-  };
-  return options;
-};
 
 //create an order
 const addOrder = async (req, res, next) => {
@@ -29,22 +17,6 @@ const addOrder = async (req, res, next) => {
     });
   }
 };
-
-const getAllOrders = async(req,res)=>{
-  try{
-    const { page, search } = req.query;
-    console.log(page, search);
-    let searchClause = {};
-    if (search) {
-      searchClause = { $text: { $search: search } };
-    }
-    const options = getOptions(page);
-    const getOrders = await Order.paginate(searchClause,options)
-    return res.send(getOrders);
-  } catch (e) {
-    return res.status(504).send(e);
-  }
-}
 
 //get an order by unique ID
 const getOrderById = async (req, res, next) => {
@@ -103,4 +75,4 @@ const deleteOrder = async (req, res, next) => {
   }
 };
 
-module.exports = { getOrderById, addOrder, editOrder, deleteOrder,getAllOrders };
+module.exports = { getOrderById, addOrder, editOrder, deleteOrder };
