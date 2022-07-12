@@ -1,7 +1,5 @@
 const Order = require("../model/order.Model");
 
-const OrderDetail = require("../model/orderDetail.Model");
-
 //create an order
 const addOrder = async (req, res, next) => {
   try {

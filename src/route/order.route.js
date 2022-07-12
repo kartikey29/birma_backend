@@ -5,7 +5,7 @@ orderRoute.get("/getOrderById/:_id", orderController.getOrderById);
 
 orderRoute.post("/addOrder", orderController.addOrder);
 
-orderRoute.get('/getAllOrders', orderController.getAllOrders)
+// orderRoute.get('/getAllOrders', orderController.getAllOrders)
 
 orderRoute.patch("/editOrder/:_id", orderController.editOrder);
 
