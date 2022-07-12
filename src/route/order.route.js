@@ -7,7 +7,7 @@ orderRoute.get("/getOrderStatus",verifyToken, orderController.getOrderStatus);
 orderRoute.post("/addOrder", verifyToken, orderController.addOrder);
 
 
-// orderRoute.get('/getAllOrders', orderController.getAllOrders)
+orderRoute.get('/getAllOrders', orderController.getAllOrders)
 
 
 

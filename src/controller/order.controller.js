@@ -59,7 +59,7 @@ const addOrder = async (req, res, next) => {
 const getAllOrders = async (req, res) => {
   try {
     const { page, search } = req.query;
-    console.log(page, search);
+   // console.log(page, search);
     let searchClause = {};
     if (search) {
       searchClause = { $text: { $search: search } };
@@ -72,24 +72,16 @@ const getAllOrders = async (req, res) => {
   }
 };
 
-//get an order by unique ID
+//get order staus by clientID
 const getOrderStatus = async (req, res, next) => {
   try {
-    // console.log(req.user);
-    const { role_Id } = req.user;
+    const { role_Id,_id } = req.user;
     if (role_Id !== '1') {
-      throw { messgae: "Order created by someone whose not client" };
+      throw { message: "Order created by someone whose not client" };
     }
-    const { page, search } = req.query;
-    //console.log(page, search);
-    let searchClause = {};
-    if (search) {
-      searchClause = { $text: { $search: search } };
-    }
-    const options = getOptions(page);
 
-    const orderData = await Order.paginate(searchClause, options);
-    return res.send(orderData);
+    const orderData = await Order.findOne({clientID:_id});
+    return res.send(orderData.status);
   } catch (error) {
     return res.status(500).send(error);
   }
