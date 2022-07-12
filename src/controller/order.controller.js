@@ -13,16 +13,16 @@ const getOptions = (page) => {
     },
     populate: [
       {
-        path:'clientID'
+        path: 'clientID'
       },
       {
-        path:'address'
+        path: 'address'
       },
       {
-        path:'deliveryId'
+        path: 'deliveryId'
       },
       {
-        path:'products.productId'
+        path: 'products.productId'
       }
     ]
   };
@@ -33,12 +33,12 @@ const getOptions = (page) => {
 const addOrder = async (req, res, next) => {
   try {
     const { role_Id } = req.user;
-   // console.log(role_Id);
+    // console.log(role_Id);
 
     if (role_Id !== "1") {
       throw { messgae: "Order created by someone whose not client" };
     }
-    const {_id}=req.user;
+    const { _id } = req.user;
     const clientId = _id;
     req.body.clientID = clientId; //inserting user _id into clientId
 
@@ -75,6 +75,11 @@ const getAllOrders = async (req, res) => {
 //get an order by unique ID
 const getOrderStatus = async (req, res, next) => {
   try {
+    // console.log(req.user);
+    const { role_Id } = req.user;
+    if (role_Id !== '1') {
+      throw { messgae: "Order created by someone whose not client" };
+    }
     const { page, search } = req.query;
     //console.log(page, search);
     let searchClause = {};
@@ -82,13 +87,8 @@ const getOrderStatus = async (req, res, next) => {
       searchClause = { $text: { $search: search } };
     }
     const options = getOptions(page);
-    console.log(req.user);
-    const { role_Id } = req.user;
-    if (role_Id !== '1') {
-      throw { messgae: "Order created by someone whose not client" };
-    }
 
-    const orderData = await Order.paginate(searchClause,options);
+    const orderData = await Order.paginate(searchClause, options);
     return res.send(orderData);
   } catch (error) {
     return res.status(500).send(error);
