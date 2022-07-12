@@ -44,7 +44,7 @@ exports.verifyToken = async (req, res, next) => {
               });
             } else {
               req.user = checkUser;
-             console.log(req.user);
+            // console.log(req.user);
               next();
             }
           }
