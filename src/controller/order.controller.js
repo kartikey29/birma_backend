@@ -18,28 +18,24 @@ const getOptions = (page) => {
 //create an order
 const addOrder = async (req, res, next) => {
   try {
-    //console.log(req.body);
     const { role_Id } = req.user;
-    const checkRole_Id = await User.findOne({ role_Id: role_Id }); //checking role_id
-    if (checkRole_Id.role_Id === "1") {
-      const clientId = checkRole_Id._id;
-      req.body.clientID = clientId; //inserting user _id into clientId
-      //console.log(req.body);
-      const insertData = await Order.create(req.body);
-      //console.log(insertData);
-      return res.status(200).json({
-        message: "Order created successfully",
-        data: insertData,
-      });
-    } else {
-      return res
-        .status(404)
-        .json({ message: "role_id doesn't match with clientID" });
+
+    if (role_Id !== "1") {
+      throw { messgae: "Order created by someone whose not client" };
     }
+    const clientId = checkRole_Id._id;
+    req.body.clientID = clientId; //inserting user _id into clientId
+
+    const insertData = await Order.create(req.body);
+
+    return res.status(200).json({
+      message: "Order created successfully",
+      data: insertData,
+    });
   } catch (error) {
     return res.status(500).json({
       message: "Server not responding",
-      data: [error.message],
+      data: error,
     });
   }
 };
