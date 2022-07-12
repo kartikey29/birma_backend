@@ -2,7 +2,7 @@ const orderRoute = require("express").Router();
 const orderController = require("../controller/order.controller");
 const { verifyToken } = require('../middleware/middleware');
 
-orderRoute.get("/getOrderById/:_id", orderController.getOrderById);
+orderRoute.get("/getOrderStatus",verifyToken, orderController.getOrderStatus);
 
 orderRoute.post("/addOrder", verifyToken, orderController.addOrder);
 
