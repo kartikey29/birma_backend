@@ -30,10 +30,11 @@ userRoute.patch(
   editProfile
 );
 
-userRoute.post("/addAddress", verifyToken , addAddress);
+userRoute.post("/addAddress", verifyToken, addAddress);
 
-userRoute.get("/getUserAddress",verifyToken, getUserAddress);
+userRoute.get("/getUserAddress", verifyToken, getUserAddress);
 
 userRoute.delete("/deleteAddress/:_id", deleteAddress);
+
 
 module.exports = userRoute;
