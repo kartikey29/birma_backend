@@ -4,30 +4,28 @@ const User = require("../model/user.Model");
 //const OrderDetail = require("../model/orderDetail.Model");
 // const { options } = require("../route/user.route");
 
-// const getOptions = (page) => {
-//   const options = {
-//     page: page,
-//     limit: 20,
-//     sort: {
-//       createdAt: -1,
-//     },
-//     populate: [
-//       {
-//         path: "clientID",
-//       },
-//       {
-//         path: "address",
-//       },
-//       {
-//         path: "deliveryId",
-//       },
-//       {
-//         path: "products.productId",
-//       },
-//     ],
-//   };
-//   return options;
-// };
+const getOptions = (page) => {
+  const options = {
+    page: page,
+    limit: 20,
+    sort: {
+      createdAt: -1,
+    },
+    populate: [
+      {
+        path: "delivery",
+      },
+      {
+        path: "address",
+      },
+      {
+        path: "products.productId",
+        select: "OurPrice MaximumRetailPrice TITLE",
+      },
+    ],
+  };
+  return options;
+};
 
 //create an order
 const addOrder = async (req, res, next) => {
@@ -35,7 +33,7 @@ const addOrder = async (req, res, next) => {
     const { role_Id } = req.user;
     // console.log(role_Id);
 
-    if (role_Id !== "1") {
+    if (role_Id != "1") {
       throw { message: "Order created by someone whose not client" };
     }
     const { _id } = req.user;
@@ -58,23 +56,35 @@ const addOrder = async (req, res, next) => {
 
 const getAllOrders = async (req, res) => {
   try {
-    const { _id } = req.user;
-    const clientId = await Order.findOne({ clientID: _id });
-    if (!clientId) {
-      throw { message: "No client with this id" };
+    const { _id, role_Id } = req.user;
+    console.log(_id);
+    const { page } = req.query;
+    if (role_Id != 1) {
+      throw { message: "customer should request " };
     }
-    const { clientID } = clientId;
+    // const clientId = await User.findOne({ clientID: _id });
+    // if (!clientId) {
+    //   throw { message: "No client with this id" };
+    // }
+    // const clientData = await
+
+    // const { clientID } = clientId;
+
+    const options = getOptions(page);
+
+    const orderData = await Order.paginate({ clientID: _id }, options);
+
     //console.log(clientID);
     //const { page } = req.query;
-    let resultPerPage = 20;
-    let skip = (parseInt(req.query.page) - 1) * parseInt(resultPerPage);
-    const getOrders = await Order.find({ clientID: clientID })
-      .populate("clientID")
-      .populate("address")
-      .populate("products.productId")
-      .limit(resultPerPage)
-      .skip(skip);
-    return res.send(getOrders);
+    // let resultPerPage = 20;
+    // let skip = (parseInt(req.query.page) - 1) * parseInt(resultPerPage);
+    // const getOrders = await Order.find({ clientID: clientID })
+    //   .populate("clientID")
+    //   .populate("address")
+    //   .populate("products.productId")
+    //   .limit(resultPerPage)
+    //   .skip(skip);
+    return res.send(orderData);
   } catch (e) {
     return res.status(504).send(e);
   }
@@ -83,15 +93,11 @@ const getAllOrders = async (req, res) => {
 //get order staus by clientID
 const getOrderStatus = async (req, res, next) => {
   try {
-    const { role_Id } = req.user;
-    if (role_Id !== '1') {
-      throw { message: "Order created by someone whose not client" };
-    }
-    const orderData = await Order.findById(req.body);
+    const orderData = await Order.findById(req.body.orderId);
     if (!orderData) {
       throw { message: "order doesn't exist" };
     }
-    return res.send(orderData.status);
+    return res.send({ status: orderData.status });
   } catch (error) {
     return res.status(500).send(error);
   }
@@ -105,7 +111,9 @@ const addDelivery = async (req, res, next) => {
       throw { message: "request sender must be customer" };
     }
     const order = await Order.findById(orderId);
-    if (order.clientID !== _id) {
+    const clientID = order.clientID.toString();
+    const userID = _id.toString();
+    if (clientID != userID) {
       throw { message: "jwt id does not match order clientID" };
     }
     const foundDeliveryMan = await User.findOne({ role_Id: 2 });
@@ -166,18 +174,37 @@ const deleteOrder = async (req, res, next) => {
 
 const cancelOrder = async (req, res, next) => {
   try {
-    const cancelOrder = await Order.findByIdAndUpdate(req.params, req.body, { new: true })
-    if (!cancelOrder) {
+    const { _id } = req.user;
+    const { status } = req.body;
+    const orderId = req.params._id;
+    // const cancelOrder = await Order.findByIdAndUpdate(req.params, req.body, {
+    //   new: true,
+    // });
+
+    const orderData = await Order.findOne({ _id: orderId });
+
+    if (!orderData) {
       throw { messsage: "order with this id not found" };
     }
+    const clientID = orderData.clientID.toString();
+    const userID = _id.toString();
+
+    if (clientID != _id) {
+      throw { message: "cannot edit the order (not correct customer)" };
+    }
+
+    orderData.status = status;
+
+    await orderData.save();
+
     return res.status(200).json({
       message: "Order is updated successfully",
-      data: cancelOrder,
+      data: orderData,
     });
   } catch (error) {
     return res.status(500).json({
       message: "Server is not responding",
-      data: error.message,
+      data: error,
     });
   }
 };
@@ -189,5 +216,5 @@ module.exports = {
   deleteOrder,
   getAllOrders,
   cancelOrder,
-  addDelivery
+  addDelivery,
 };
