@@ -2,7 +2,7 @@ const Order = require("../model/order.Model");
 const User = require("../model/user.Model");
 
 //const OrderDetail = require("../model/orderDetail.Model");
-const { options } = require("../route/user.route");
+// const { options } = require("../route/user.route");
 
 const getOptions = (page) => {
   const options = {
@@ -11,6 +11,20 @@ const getOptions = (page) => {
     sort: {
       createdAt: -1,
     },
+    populate: [
+      {
+        path: 'clientID'
+      },
+      {
+        path: 'address'
+      },
+      {
+        path: 'deliveryId'
+      },
+      {
+        path: 'products.productId'
+      }
+    ]
   };
   return options;
 };
@@ -19,11 +33,13 @@ const getOptions = (page) => {
 const addOrder = async (req, res, next) => {
   try {
     const { role_Id } = req.user;
+    // console.log(role_Id);
 
     if (role_Id !== "1") {
       throw { messgae: "Order created by someone whose not client" };
     }
-    const clientId = checkRole_Id._id;
+    const { _id } = req.user;
+    const clientId = _id;
     req.body.clientID = clientId; //inserting user _id into clientId
 
     const insertData = await Order.create(req.body);
@@ -43,7 +59,7 @@ const addOrder = async (req, res, next) => {
 const getAllOrders = async (req, res) => {
   try {
     const { page, search } = req.query;
-    console.log(page, search);
+   // console.log(page, search);
     let searchClause = {};
     if (search) {
       searchClause = { $text: { $search: search } };
@@ -56,18 +72,16 @@ const getAllOrders = async (req, res) => {
   }
 };
 
-//get an order by unique ID
-const getOrderById = async (req, res, next) => {
+//get order staus by clientID
+const getOrderStatus = async (req, res, next) => {
   try {
-    const _id = req.params;
-    const orderData = await Order.findById(_id);
-    if (!orderData) {
-      throw { message: "Order doesnt exist" };
+    const { role_Id,_id } = req.user;
+    if (role_Id !== '1') {
+      throw { message: "Order created by someone whose not client" };
     }
-    return res.status(200).json({
-      message: "Order fetched successfully",
-      data: orderData,
-    });
+
+    const orderData = await Order.findOne({clientID:_id});
+    return res.send(orderData.status);
   } catch (error) {
     return res.status(500).send(error);
   }
@@ -141,7 +155,7 @@ const deleteOrder = async (req, res, next) => {
 };
 
 module.exports = {
-  getOrderById,
+  getOrderStatus,
   addOrder,
   editOrder,
   deleteOrder,
