@@ -14,4 +14,6 @@ orderRoute.patch("/editOrder/:_id", orderController.editOrder);
 
 orderRoute.delete("/deleteOrder/:_id", orderController.deleteOrder);
 
+orderRoute.patch("/cancelOrder/:_id", verifyToken, orderController.cancelOrder);
+
 module.exports = orderRoute;

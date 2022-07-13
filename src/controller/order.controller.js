@@ -36,7 +36,7 @@ const addOrder = async (req, res, next) => {
     // console.log(role_Id);
 
     if (role_Id !== "1") {
-      throw { messgae: "Order created by someone whose not client" };
+      throw { message: "Order created by someone whose not client" };
     }
     const { _id } = req.user;
     const clientId = _id;
@@ -83,12 +83,14 @@ const getAllOrders = async (req, res) => {
 //get order staus by clientID
 const getOrderStatus = async (req, res, next) => {
   try {
-    const { role_Id, _id } = req.user;
-    if (role_Id !== "1") {
+    const { role_Id } = req.user;
+    if (role_Id !== '1') {
       throw { message: "Order created by someone whose not client" };
     }
-
-    const orderData = await Order.findOne({ clientID: _id });
+    const orderData = await Order.findById(req.body);
+    if (!orderData) {
+      throw { message: "order doesn't exist" };
+    }
     return res.send(orderData.status);
   } catch (error) {
     return res.status(500).send(error);
@@ -162,11 +164,30 @@ const deleteOrder = async (req, res, next) => {
   }
 };
 
+const cancelOrder = async (req, res, next) => {
+  try {
+    const cancelOrder = await Order.findByIdAndUpdate(req.params, req.body, { new: true })
+    if (!cancelOrder) {
+      throw { messsage: "order with this id not found" };
+    }
+    return res.status(200).json({
+      message: "Order is updated successfully",
+      data: cancelOrder,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Server is not responding",
+      data: error.message,
+    });
+  }
+};
+
 module.exports = {
   getOrderStatus,
   addOrder,
   editOrder,
   deleteOrder,
   getAllOrders,
-  addDelivery,
+  cancelOrder,
+  addDelivery
 };
