@@ -51,6 +51,7 @@ const orderSchema = new mongoose.Schema(
         },
       },
     ],
+    delivery: { type: mongoose.Schema.Types.ObjectId, ref: "Order" },
   },
   { timestamps: true }
 );

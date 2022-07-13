@@ -73,6 +73,33 @@ const getOrderById = async (req, res, next) => {
   }
 };
 
+const addDelivery = async (req, res, next) => {
+  try {
+    const { _id, role_Id } = req.user;
+    const { orderId } = req.body;
+    if (role_Id !== "1") {
+      throw { message: "request sender must be customer" };
+    }
+    const order = await Order.findById(orderId);
+    if (order.clientID !== _id) {
+      throw { message: "jwt id does not match order clientID" };
+    }
+    const foundDeliveryMan = await User.findOne({ role_Id: 2 });
+
+    order.delivery = foundDeliveryMan._id;
+
+    await order.save();
+    await foundDeliveryMan.save();
+
+    return res.send({
+      message: "delivery man assigned",
+      foundDeliveryMan,
+    });
+  } catch (error) {
+    return res.status(500).send(error);
+  }
+};
+
 //update order of the user
 const editOrder = async (req, res, next) => {
   try {
@@ -119,4 +146,5 @@ module.exports = {
   editOrder,
   deleteOrder,
   getAllOrders,
+  addDelivery,
 };
