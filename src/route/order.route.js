@@ -8,7 +8,7 @@ orderRoute.post("/addOrder", verifyToken, orderController.addOrder);
 
 orderRoute.post("/addDelivery", verifyToken, orderController.addDelivery);
 
-orderRoute.get("/getAllOrders", orderController.getAllOrders);
+orderRoute.get("/getAllOrders", verifyToken, orderController.getAllOrders);
 
 orderRoute.patch("/editOrder/:_id", orderController.editOrder);
 

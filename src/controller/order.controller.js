@@ -4,30 +4,30 @@ const User = require("../model/user.Model");
 //const OrderDetail = require("../model/orderDetail.Model");
 // const { options } = require("../route/user.route");
 
-const getOptions = (page) => {
-  const options = {
-    page: page,
-    limit: 20,
-    sort: {
-      createdAt: -1,
-    },
-    populate: [
-      {
-        path: 'clientID'
-      },
-      {
-        path: 'address'
-      },
-      {
-        path: 'deliveryId'
-      },
-      {
-        path: 'products.productId'
-      }
-    ]
-  };
-  return options;
-};
+// const getOptions = (page) => {
+//   const options = {
+//     page: page,
+//     limit: 20,
+//     sort: {
+//       createdAt: -1,
+//     },
+//     populate: [
+//       {
+//         path: "clientID",
+//       },
+//       {
+//         path: "address",
+//       },
+//       {
+//         path: "deliveryId",
+//       },
+//       {
+//         path: "products.productId",
+//       },
+//     ],
+//   };
+//   return options;
+// };
 
 //create an order
 const addOrder = async (req, res, next) => {
@@ -58,14 +58,22 @@ const addOrder = async (req, res, next) => {
 
 const getAllOrders = async (req, res) => {
   try {
-    const { page, search } = req.query;
-   // console.log(page, search);
-    let searchClause = {};
-    if (search) {
-      searchClause = { $text: { $search: search } };
+    const { _id } = req.user;
+    const clientId = await Order.findOne({ clientID: _id });
+    if (!clientId) {
+      throw { message: "No client with this id" };
     }
-    const options = getOptions(page);
-    const getOrders = await Order.paginate(searchClause, options);
+    const { clientID } = clientId;
+    //console.log(clientID);
+    //const { page } = req.query;
+    let resultPerPage = 20;
+    let skip = (parseInt(req.query.page) - 1) * parseInt(resultPerPage);
+    const getOrders = await Order.find({ clientID: clientID })
+      .populate("clientID")
+      .populate("address")
+      .populate("products.productId")
+      .limit(resultPerPage)
+      .skip(skip);
     return res.send(getOrders);
   } catch (e) {
     return res.status(504).send(e);
@@ -75,12 +83,12 @@ const getAllOrders = async (req, res) => {
 //get order staus by clientID
 const getOrderStatus = async (req, res, next) => {
   try {
-    const { role_Id,_id } = req.user;
-    if (role_Id !== '1') {
+    const { role_Id, _id } = req.user;
+    if (role_Id !== "1") {
       throw { message: "Order created by someone whose not client" };
     }
 
-    const orderData = await Order.findOne({clientID:_id});
+    const orderData = await Order.findOne({ clientID: _id });
     return res.send(orderData.status);
   } catch (error) {
     return res.status(500).send(error);
