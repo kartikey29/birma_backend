@@ -1,14 +1,14 @@
 const orderRoute = require("express").Router();
 const orderController = require("../controller/order.controller");
-const { verifyToken } = require('../middleware/middleware');
+const { verifyToken } = require("../middleware/middleware");
 
 orderRoute.get("/getOrderStatus", verifyToken, orderController.getOrderStatus);
 
 orderRoute.post("/addOrder", verifyToken, orderController.addOrder);
 
+orderRoute.post("/addDelivery", verifyToken, orderController.addDelivery);
 
-orderRoute.get('/getAllOrders', orderController.getAllOrders)
-
+orderRoute.get("/getAllOrders", verifyToken, orderController.getAllOrders);
 
 orderRoute.patch("/editOrder/:_id", orderController.editOrder);
 
