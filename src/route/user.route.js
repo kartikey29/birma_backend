@@ -15,7 +15,7 @@ const {
 } = require("../controller/user.controller");
 const { verify } = require("jsonwebtoken");
 
-userRoute.post("/addUser", upload.single('image'), addUser);
+userRoute.post("/addUser", upload.single("image"), addUser);
 
 userRoute.post("/login", loginUser);
 
@@ -34,7 +34,6 @@ userRoute.post("/addAddress", verifyToken, addAddress);
 
 userRoute.get("/getUserAddress", verifyToken, getUserAddress);
 
-userRoute.delete("/deleteAddress/:_id", deleteAddress);
-
+userRoute.delete("/deleteAddress", verifyToken, deleteAddress);
 
 module.exports = userRoute;
