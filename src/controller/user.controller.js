@@ -118,7 +118,7 @@ const editProfile = async (req, res, next) => {
 //add user address
 const addAddress = async (req, res, next) => {
   try {
-   req.body.userId = req.user._id;
+    req.body.userId = req.user._id;
     const { street, reference, latitude, longitude, userId } = req.body;
     //userId = req.user.UID;
     //console.log(userId);
@@ -169,8 +169,14 @@ const getUserAddress = async (req, res, next) => {
 //delete user address from the database
 const deleteAddress = async (req, res, next) => {
   try {
-    const { _id } = req.params;
-    const delAdd = await Address.findByIdAndDelete(_id);
+    // console.log(req.user);
+    const { _id } = req.user;
+    const checkUser = await Address.findOne({ userId: _id });
+    if (!checkUser) {
+      throw { message: "user doesnt exist" };
+    }
+    // console.log(checkUser);
+    const delAdd = await Address.findByIdAndRemove(checkUser._id);
     if (!delAdd) {
       throw { message: "No address available" };
     }
@@ -179,8 +185,7 @@ const deleteAddress = async (req, res, next) => {
       .json({ message: "Address deleted successfully", data: delAdd });
   } catch (error) {
     return res.status(500).json({
-      message: "Address cannot be deleted",
-      data: error.message,
+      data: error,
     });
   }
 };
