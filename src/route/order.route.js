@@ -10,10 +10,10 @@ orderRoute.post("/addDelivery", verifyToken, orderController.addDelivery);
 
 orderRoute.get("/getAllOrders", verifyToken, orderController.getAllOrders);
 
-orderRoute.patch("/editOrder/:_id", orderController.editOrder);
+// orderRoute.patch("/editOrder/:_id", orderController.editOrder);
 
 orderRoute.delete("/deleteOrder/:_id", orderController.deleteOrder);
 
-orderRoute.patch("/cancelOrder/:_id", verifyToken, orderController.cancelOrder);
+orderRoute.patch("/cancelOrder/:_id", verifyToken, orderController.changeOrderStatus);
 
 module.exports = orderRoute;

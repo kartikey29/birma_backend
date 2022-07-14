@@ -132,33 +132,33 @@ const addDelivery = async (req, res, next) => {
   }
 };
 
-//update order of the user
-const editOrder = async (req, res, next) => {
-  try {
-    const editOrderById = await Order.findByIdAndUpdate(req.params, req.body, {
-      new: true,
-    });
-    if (!editOrderById) {
-      throw { message: "order doesn't exist" };
-    }
-    return res.status(200).json({
-      message: "Order updated successfully",
-      data: editOrderById,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      message: "Server not responding",
-      data: error.message,
-    });
-  }
-};
+// //update order of the user
+// const editOrder = async (req, res, next) => {
+//   try {
+//     const editOrderById = await Order.findByIdAndUpdate(req.params, req.body, {
+//       new: true,
+//     });
+//     if (!editOrderById) {
+//       throw { message: "order doesn't exist" };
+//     }
+//     return res.status(200).json({
+//       message: "Order updated successfully",
+//       data: editOrderById,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: "Server not responding",
+//       data: error.message,
+//     });
+//   }
+// };
 
 //delete order of the user
 const deleteOrder = async (req, res, next) => {
   try {
     const deleteOrderById = await Order.findByIdAndDelete(req.params);
     if (!deleteOrderById) {
-      throw { message: "Order doesn;t exist" };
+      throw { message: "Order doesn't exist" };
     }
     return res.status(200).json({
       message: "Order deleted successfully",
@@ -172,7 +172,7 @@ const deleteOrder = async (req, res, next) => {
   }
 };
 
-const cancelOrder = async (req, res, next) => {
+const changeOrderStatus = async (req, res, next) => {
   try {
     const { _id } = req.user;
     const { status } = req.body;
@@ -212,9 +212,9 @@ const cancelOrder = async (req, res, next) => {
 module.exports = {
   getOrderStatus,
   addOrder,
-  editOrder,
+  // editOrder,
   deleteOrder,
   getAllOrders,
-  cancelOrder,
+  changeOrderStatus,
   addDelivery,
 };
