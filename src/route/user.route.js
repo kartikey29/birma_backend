@@ -33,7 +33,7 @@ userRoute.patch(
 
 userRoute.post("/addAddress", verifyToken, addAddress);
 
-userRoute.patch("/editAddress",verifyToken,editAddress);
+userRoute.patch("/editAddress/:_id",verifyToken,editAddress);
 
 userRoute.get("/getUserAddress", verifyToken, getUserAddress);
 
