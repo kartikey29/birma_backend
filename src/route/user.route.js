@@ -12,6 +12,7 @@ const {
   getUserAddress,
   deleteAddress,
   loginUser,
+  editAddress
 } = require("../controller/user.controller");
 const { verify } = require("jsonwebtoken");
 
@@ -31,6 +32,8 @@ userRoute.patch(
 );
 
 userRoute.post("/addAddress", verifyToken, addAddress);
+
+userRoute.patch("/editAddress",verifyToken,editAddress);
 
 userRoute.get("/getUserAddress", verifyToken, getUserAddress);
 

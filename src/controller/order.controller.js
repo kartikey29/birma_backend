@@ -166,6 +166,7 @@ const deleteOrder = async (req, res, next) => {
 
 const cancelOrder = async (req, res, next) => {
   try {
+    
     const cancelOrder = await Order.findByIdAndUpdate(req.params, req.body, { new: true })
     if (!cancelOrder) {
       throw { messsage: "order with this id not found" };
