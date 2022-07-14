@@ -185,6 +185,25 @@ const deleteAddress = async (req, res, next) => {
   }
 };
 
+const editAddress = async(req,res,next)=>{
+  try{
+    const {_id} = req.user;
+    const editAddress = await Address.findByIdAndUpdate(_id,req.body);
+    if(!editAddress){
+      throw {message:"clientId not found"}
+    }
+    return res.status(200).json({
+      message: "User Address edited  successfully",
+      data: editAddress,
+    })
+  }catch (error) {
+      return res.status(500).json({
+        message: "Address cannot be deleted",
+        data: error.message,
+      });
+  }
+}
+
 module.exports = {
   addUser,
   getAllUser,
@@ -194,4 +213,5 @@ module.exports = {
   getUserAddress,
   deleteAddress,
   loginUser,
+  editAddress,
 };
