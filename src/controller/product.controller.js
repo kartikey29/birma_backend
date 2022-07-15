@@ -95,6 +95,38 @@ const getProductById = async (req, res) => {
   }
 }
 
+const rateProduct = async (req, res) => {
+  try {
+    // console.log(req.body)
+    const { role_Id, _id } = req.user;
+    console.log(_id);
+    if (role_Id == '1') {
+      const checkProduct = await Product.findById(req.params);
+      if (!checkProduct) {
+        throw { message: "productId not found" }
+      }
+       console.log(await Review.findOne({ productId: req.params}));
+      if (((await Review.findOne({ user: _id })) && (await Review.findOne({ productId: req.params })))) {
+        const saveReview = new Review({
+          productId: req.params,
+          user: _id,
+          rating: req.body.rating,
+          review: req.body.review
+        });
+        //await saveReview.save();
+        return res.send(await saveReview.save());
+      }
+      else {
+        throw { message: "already reviewed" };
+      }
+    }
+    else {
+      throw { message: "client id not found" };
+    }
+  } catch (e) {
+    return res.status(504).send(e);
+  }
+}
 
 
-module.exports = { refreshProductList, getProducts, getProductById,rateProduct};
+module.exports = { refreshProductList, getProducts, getProductById, rateProduct };
