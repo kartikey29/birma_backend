@@ -54,7 +54,7 @@ const orderSchema = new mongoose.Schema(
 
 orderSchema.plugin(paginate);
 
-orderSchema.index({ name: "text", title: "text" });
+orderSchema.index({ ItemName: "text" });
 const Order = mongoose.model("Order", orderSchema);
 
 module.exports = Order;

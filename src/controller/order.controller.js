@@ -1,9 +1,6 @@
 const Order = require("../model/order.Model");
 const User = require("../model/user.Model");
 
-//const OrderDetail = require("../model/orderDetail.Model");
-// const { options } = require("../route/user.route");
-
 const getOptions = (page) => {
   const options = {
     page: page,
@@ -62,28 +59,12 @@ const getAllOrders = async (req, res) => {
     if (role_Id != 1) {
       throw { message: "customer should request " };
     }
-    // const clientId = await Order.findOne({ clientID: _id });
-    // if (!clientId) {
-    //   throw { message: "No client with this id" };
-    // }
-    // const clientData = await
-
-    // const { clientID } = clientId;
+    Id;
 
     const options = getOptions(page);
 
     const orderData = await Order.paginate({ clientID: _id }, options);
 
-    //console.log(clientID);
-    //const { page } = req.query;
-    // let resultPerPage = 20;
-    // let skip = (parseInt(req.query.page) - 1) * parseInt(resultPerPage);
-    // const getOrders = await Order.find({ clientID: clientID })
-    //   .populate("clientID")
-    //   .populate("address")
-    //   .populate("products.productId")
-    //   .limit(resultPerPage)
-    //   .skip(skip);
     return res.send(orderData);
   } catch (e) {
     return res.status(504).send(e);
@@ -177,9 +158,6 @@ const cancelOrder = async (req, res, next) => {
     const { _id } = req.user;
     const { status } = req.body;
     const orderId = req.params._id;
-    // const cancelOrder = await Order.findByIdAndUpdate(req.params, req.body, {
-    //   new: true,
-    // });
 
     const orderData = await Order.findOne({ _id: orderId });
 
