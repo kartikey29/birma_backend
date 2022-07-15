@@ -18,6 +18,8 @@ const refreshProductList = async (req, res) => {
     const deletedCount = await Product.deleteMany({});
     console.log(deletedCount);
     const { googleSheetsInstance, auth } = await gSheetApiConfig();
+
+
     const readData = await googleSheetsInstance.spreadsheets.values.get({
       auth, //auth object
       spreadsheetId: process.env.spreadsheetId, // spreadsheet id
@@ -69,4 +71,16 @@ const getProducts = async (req, res) => {
   }
 };
 
-module.exports = { refreshProductList, getProducts };
+const getProductById = async (req, res) => {
+  try {
+    const getProduct = await Product.findById(req.params);
+    if (!getProduct) {
+      throw { message: "product id not found" };
+    }
+    return res.send(getProduct);
+  } catch (e) {
+    return res.status(504).send(e);
+  }
+}
+
+module.exports = { refreshProductList, getProducts, getProductById };
