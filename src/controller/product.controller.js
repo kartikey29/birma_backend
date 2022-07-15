@@ -83,4 +83,6 @@ const getProductById = async (req, res) => {
   }
 }
 
-module.exports = { refreshProductList, getProducts, getProductById };
+
+
+module.exports = { refreshProductList, getProducts, getProductById,rateProduct};
