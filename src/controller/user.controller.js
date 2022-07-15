@@ -3,6 +3,13 @@ const Address = require("../model/address.Model");
 const _ = require("lodash");
 const JWT = require("jsonwebtoken");
 
+const { admin } = require("../utils/firebase-config");
+
+const notification_options = {
+  priority: "high",
+  timeToLive: 60 * 60 * 24,
+};
+
 //user login
 const loginUser = async (req, res, next) => {
   try {
@@ -175,19 +182,17 @@ const deleteAddress = async (req, res, next) => {
     if (!checkAddress) {
       throw { message: "Address doesnt exist" };
     }
-    console.log(checkAddress)
+    console.log(checkAddress);
     const clientId = checkAddress.userId.toString();
-    console.log(clientId)
+    console.log(clientId);
     const id = _id.toString();
     if (id != clientId) {
-      throw { message: "clientId didn't match" }
-
+      throw { message: "clientId didn't match" };
     }
     const delAdd = await Address.findByIdAndRemove(req.body);
     return res
       .status(200)
       .json({ message: "Address deleted successfully", data: delAdd });
-
   } catch (error) {
     return res.status(500).json({
       data: error,
@@ -198,10 +203,10 @@ const deleteAddress = async (req, res, next) => {
 const editAddress = async (req, res, next) => {
   try {
     const { _id } = req.user;
-    console.log(req.user)
+    console.log(req.user);
     const findAddress = await Address.findById(req.params);
     if (!findAddress) {
-      throw { message: "AddressId doesn't exist" }
+      throw { message: "AddressId doesn't exist" };
     }
     const clientId = findAddress.userId.toString();
     const id = _id.toString();
@@ -212,14 +217,35 @@ const editAddress = async (req, res, next) => {
     return res.status(200).json({
       message: " Address edited  successfully",
       data: updateAddress,
-    })
+    });
   } catch (error) {
     return res.status(500).json({
       //message: "Address cannot be deleted",
       data: error.message,
     });
   }
-}
+};
+
+const sendNotification = async (req, res, next) => {
+  const registrationToken = req.body.registrationToken;
+  const message = {
+    notification: {
+      title: req.body.title,
+      body: req.body.body,
+    },
+  };
+  console.log(message);
+  const options = notification_options;
+  admin
+    .messaging()
+    .sendToDevice(registrationToken, message, options)
+    .then((response) => {
+      res.status(200).send("Notification sent successfully");
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
 
 module.exports = {
   addUser,
@@ -231,4 +257,5 @@ module.exports = {
   deleteAddress,
   loginUser,
   editAddress,
+  sendNotification,
 };

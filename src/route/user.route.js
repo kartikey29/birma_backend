@@ -12,8 +12,10 @@ const {
   getUserAddress,
   deleteAddress,
   loginUser,
-  editAddress
+  editAddress,
+  sendNotification,
 } = require("../controller/user.controller");
+
 const { verify } = require("jsonwebtoken");
 
 userRoute.post("/addUser", upload.single("image"), addUser);
@@ -33,10 +35,12 @@ userRoute.patch(
 
 userRoute.post("/addAddress", verifyToken, addAddress);
 
-userRoute.patch("/editAddress/:_id",verifyToken,editAddress);
+userRoute.patch("/editAddress/:_id", verifyToken, editAddress);
 
 userRoute.get("/getUserAddress", verifyToken, getUserAddress);
 
 userRoute.delete("/deleteAddress", verifyToken, deleteAddress);
+
+userRoute.post("/firebase/notification", sendNotification);
 
 module.exports = userRoute;
