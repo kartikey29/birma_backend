@@ -1,14 +1,15 @@
+const totalRating = require("../helperFunctions/getTotalRating");
 const Product = require("../model/product.Model");
+const Review = require("../model/review.Model");
 
 const gSheetApiConfig = require("../utils/gSheet");
 
-const getOptions = (page) => {
+const getOptions = (page, sort) => {
   const options = {
     page: page,
     limit: 20,
-    sort: {
-      createdAt: -1,
-    },
+    sort: sort,
+    lean: true,
   };
   return options;
 };
@@ -24,7 +25,7 @@ const refreshProductList = async (req, res) => {
       range: "products", //range of cells to read from.
     });
     readData.data.values.splice(0, 1);
-
+    console.log(readData.data.values.length);
     //maping data to json as it comes in text array
     readData.data.values.map(async (element) => {
       const object = new Product({
@@ -57,12 +58,31 @@ const getProducts = async (req, res) => {
   try {
     const { page, search } = req.query;
     let searchClause = {};
+    let sort = {
+      createdAt: -1,
+    };
+
     if (search) {
-      searchClause = { $text: { $search: search } };
+      sort = {
+        score: { $meta: "textScore" },
+      };
+      searchClause = {
+        $text: { $search: search },
+        score: { $meta: "textScore" },
+      };
     }
-    const options = getOptions(page);
+    const options = getOptions(page, sort);
 
     const allProductData = await Product.paginate(searchClause, options);
+
+    allProductData.docs = await Promise.all(
+      allProductData.docs.map(async (product) => {
+        const review = await Review.find({ productId: product._id });
+        const rating = totalRating(review);
+        return { ...product, rating };
+      })
+    );
+
     return res.send(allProductData);
   } catch (e) {
     return res.status(504).send(e);
