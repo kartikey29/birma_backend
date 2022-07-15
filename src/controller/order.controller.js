@@ -212,7 +212,7 @@ const cancelOrder = async (req, res, next) => {
 module.exports = {
   getOrderStatus,
   addOrder,
-  editOrder,
+
   deleteOrder,
   getAllOrders,
   cancelOrder,
