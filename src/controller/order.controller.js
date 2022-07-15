@@ -62,7 +62,7 @@ const getAllOrders = async (req, res) => {
     if (role_Id != 1) {
       throw { message: "customer should request " };
     }
-    // const clientId = await User.findOne({ clientID: _id });
+    // const clientId = await Order.findOne({ clientID: _id });
     // if (!clientId) {
     //   throw { message: "No client with this id" };
     // }
@@ -134,32 +134,32 @@ const addDelivery = async (req, res, next) => {
 };
 
 //update order of the user
-const editOrder = async (req, res, next) => {
-  try {
-    const editOrderById = await Order.findByIdAndUpdate(req.params, req.body, {
-      new: true,
-    });
-    if (!editOrderById) {
-      throw { message: "order doesn't exist" };
-    }
-    return res.status(200).json({
-      message: "Order updated successfully",
-      data: editOrderById,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      message: "Server not responding",
-      data: error.message,
-    });
-  }
-};
+// const editOrder = async (req, res, next) => {
+//   try {
+//     const editOrderById = await Order.findByIdAndUpdate(req.params, req.body, {
+//       new: true,
+//     });
+//     if (!editOrderById) {
+//       throw { message: "order doesn't exist" };
+//     }
+//     return res.status(200).json({
+//       message: "Order updated successfully",
+//       data: editOrderById,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: "Server not responding",
+//       data: error.message,
+//     });
+//   }
+// };
 
 //delete order of the user
 const deleteOrder = async (req, res, next) => {
   try {
     const deleteOrderById = await Order.findByIdAndDelete(req.params);
     if (!deleteOrderById) {
-      throw { message: "Order doesn;t exist" };
+      throw { message: "Order doesn;'t exist" };
     }
     return res.status(200).json({
       message: "Order deleted successfully",
@@ -190,7 +190,7 @@ const cancelOrder = async (req, res, next) => {
     const clientID = orderData.clientID.toString();
     const userID = _id.toString();
 
-    if (clientID != _id) {
+    if (clientID != userID) {
       throw { message: "cannot edit the order (not correct customer)" };
     }
 
@@ -213,7 +213,7 @@ const cancelOrder = async (req, res, next) => {
 module.exports = {
   getOrderStatus,
   addOrder,
-  editOrder,
+
   deleteOrder,
   getAllOrders,
   cancelOrder,
