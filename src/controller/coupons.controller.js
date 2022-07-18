@@ -47,7 +47,24 @@ const updateCoupons = async (req, res) => {
             data: er.message,
         })
     }
-
 }
 
-module.exports = { createCoupons, getCoupons, updateCoupons };
+const deleteCoupons = async (req, res) => {
+    try {
+        const deleteCoupons = await Coupons.findByIdAndRemove(req.params);
+        if (!deleteCoupons) {
+            throw { message: "coupons id not found" }
+        }
+        return res.status(201).json({
+            message: "coupons id deleted successfully",
+            data: deleteCoupons,
+        });
+    } catch (er) {
+        return res.status(400).json({
+            message: "cannot be deleted",
+            data: er.message,
+        })
+    }
+}
+
+module.exports = { createCoupons, getCoupons, updateCoupons, deleteCoupons };
