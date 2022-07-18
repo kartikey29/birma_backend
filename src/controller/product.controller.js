@@ -100,29 +100,24 @@ const rateProduct = async (req, res) => {
     // console.log(req.body)
     const { role_Id, _id } = req.user;
     console.log(_id);
-    if (role_Id == '1') {
-      const checkProduct = await Product.findById(req.params);
-      if (!checkProduct) {
-        throw { message: "productId not found" }
-      }
-       console.log(await Review.findOne({ productId: req.params}));
-      if (((await Review.findOne({ user: _id })) && (await Review.findOne({ productId: req.params })))) {
-        const saveReview = new Review({
-          productId: req.params,
-          user: _id,
-          rating: req.body.rating,
-          review: req.body.review
-        });
-        //await saveReview.save();
-        return res.send(await saveReview.save());
-      }
-      else {
-        throw { message: "already reviewed" };
-      }
-    }
-    else {
+    if (role_Id != '1') {
       throw { message: "client id not found" };
+    } //check roleid
+    const checkProduct = await Product.findById(req.params);
+    if (!checkProduct) {
+      throw { message: "productId not found" }
     }
+    const checkProductUser = await Review.findOne({ productId: req.params, user: _id });
+    if (checkProductUser) {
+      throw { message: "already reviewed" };
+    }
+    const saveReview = new Review({
+      productId: req.params,
+      user: _id,
+      rating: req.body.rating,
+      review: req.body.review
+    });
+    return res.send(await saveReview.save());
   } catch (e) {
     return res.status(504).send(e);
   }
