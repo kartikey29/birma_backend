@@ -23,14 +23,9 @@ require("dotenv").config({ path: "./config.env" });
 // Routes
 const userRoute = require("./src/route/user.route");
 const productRoute = require("./src/route/product.route");
-<<<<<<< HEAD
-const orderRoute = require("./src/route/order.route");
-const registerRoute = require("./src/route/register.route");
-=======
 const orderRoute = require('./src/route/order.route');
 const registerRoute=require('./src/route/register.route');
 const couponsRoute = require("./src/route/coupons.route");
->>>>>>> e526232f765d9d11669c7d70910074c8b8760009
 
 // Environment Variable
 const port = process.env.PORT;
@@ -51,13 +46,9 @@ app.use(morgan("dev"));
 app.use("/api/user", userRoute);
 app.use("/api/product", productRoute);
 app.use("/api/order", orderRoute);
-<<<<<<< HEAD
-app.use("/api/register", registerRoute);
-=======
 app.use("/api/register",registerRoute);
 app.use("/api/coupons",couponsRoute);
 
->>>>>>> e526232f765d9d11669c7d70910074c8b8760009
 
 //Restrict Invalid Routes
 app.get("*", (req, res) => {
