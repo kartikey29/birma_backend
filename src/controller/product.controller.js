@@ -4,13 +4,11 @@ const Review = require("../model/review.Model");
 
 const gSheetApiConfig = require("../utils/gSheet");
 
-const getOptions = (page) => {
+const getOptions = (page, sort) => {
   const options = {
     page: page,
     limit: 20,
-    sort: {
-      createdAt: -1,
-    },
+    sort: sort,
     lean: true,
   };
   return options;
@@ -62,10 +60,20 @@ const getProducts = async (req, res) => {
   try {
     const { page, search } = req.query;
     let searchClause = {};
+    let sort = {
+      createdAt: -1,
+    };
+
     if (search) {
-      searchClause = { ItemName: { $regex: search, $options: "i" } };
+      sort = {
+        score: { $meta: "textScore" },
+      };
+      searchClause = {
+        $text: { $search: search },
+        score: { $meta: "textScore" },
+      };
     }
-    const options = getOptions(page);
+    const options = getOptions(page, sort);
 
     const allProductData = await Product.paginate(searchClause, options);
 
