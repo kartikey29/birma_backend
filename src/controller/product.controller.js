@@ -19,6 +19,8 @@ const refreshProductList = async (req, res) => {
     const deletedCount = await Product.deleteMany({});
     console.log(deletedCount);
     const { googleSheetsInstance, auth } = await gSheetApiConfig();
+
+
     const readData = await googleSheetsInstance.spreadsheets.values.get({
       auth, //auth object
       spreadsheetId: process.env.spreadsheetId, // spreadsheet id
@@ -89,4 +91,45 @@ const getProducts = async (req, res) => {
   }
 };
 
-module.exports = { refreshProductList, getProducts };
+const getProductById = async (req, res) => {
+  try {
+    const getProduct = await Product.findById(req.params);
+    if (!getProduct) {
+      throw { message: "product id not found" };
+    }
+    return res.send(getProduct);
+  } catch (e) {
+    return res.status(504).send(e);
+  }
+}
+
+const rateProduct = async (req, res) => {
+  try {
+    // console.log(req.body)
+    const { role_Id, _id } = req.user;
+    console.log(_id);
+    if (role_Id != '1') {
+      throw { message: "client id not found" };
+    } //check roleid
+    const checkProduct = await Product.findById(req.params);
+    if (!checkProduct) {
+      throw { message: "productId not found" }
+    }
+    const checkProductUser = await Review.findOne({ productId: req.params, user: _id });
+    if (checkProductUser) {
+      throw { message: "already reviewed" };
+    }
+    const saveReview = new Review({
+      productId: req.params,
+      user: _id,
+      rating: req.body.rating,
+      review: req.body.review
+    });
+    return res.send(await saveReview.save());
+  } catch (e) {
+    return res.status(504).send(e);
+  }
+}
+
+
+module.exports = { refreshProductList, getProducts, getProductById, rateProduct };
