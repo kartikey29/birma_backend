@@ -31,6 +31,24 @@ const getCoupons = async (req, res) => {
     }
 }
 
+const getCouponById = async (req, res) => {
+    try {
+        const getCoupon = await Coupons.findById(req.params);
+        if (!getCoupon) {
+            throw { message: "coupon id not found " }
+        }
+        return res.status(200).json({
+            message: "coupon fetched successfully ",
+            data: getCoupon
+        })
+    } catch (er) {
+        return res.status(400).json({
+            message: "user data cannot be fetched",
+            data: er.message
+        })
+    }
+}
+
 const updateCoupons = async (req, res) => {
     try {
         const updateCoupons = await Coupons.findByIdAndUpdate(req.params, req.body, { new: true });
@@ -67,4 +85,4 @@ const deleteCoupons = async (req, res) => {
     }
 }
 
-module.exports = { createCoupons, getCoupons, updateCoupons, deleteCoupons };
+module.exports = { createCoupons, getCoupons, updateCoupons, deleteCoupons, getCouponById };
