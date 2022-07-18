@@ -41,6 +41,6 @@ userRoute.get("/getUserAddress", verifyToken, getUserAddress);
 
 userRoute.delete("/deleteAddress", verifyToken, deleteAddress);
 
-userRoute.post("/firebase/notification", sendNotification);
+userRoute.post("/firebase/notification",verifyToken, sendNotification);
 
 module.exports = userRoute;
