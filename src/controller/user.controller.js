@@ -227,14 +227,14 @@ const editAddress = async (req, res, next) => {
 };
 
 const sendNotification = async (req, res, next) => {
-  const registrationToken = req.body.registrationToken;
+  const registrationToken =
+    "AAAAjo4UJ2I:APA91bEQNC21uWIZKRtkC4vAsaeJ5rlekptz2wqZbw8OdLkS81ghMGe9DSf2_Dil9ZELMmYFDtmde3oOl_GlsLuItdb1mFJZjsroj7nEEKqEfs5tWjIkyaS45DhZIXUH1kWErKzJ5ZIK";
   const message = {
     notification: {
-      title: req.body.title,
-      body: req.body.body,
+      title: "my new notification title",
+      body: "my new",
     },
   };
-  console.log(message);
   const options = notification_options;
   admin
     .messaging()
