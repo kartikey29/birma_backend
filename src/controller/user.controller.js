@@ -75,7 +75,7 @@ const getUserById = async (req, res, next) => {
     if (!userData) {
       throw { message: "User doesnt exist" };
     }
-    return res.status(201).json({
+    return res.status(200).json({
       message: "User fetched successfully",
       data: userData,
     });
