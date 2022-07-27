@@ -41,6 +41,8 @@ const addUser = async (req, res) => {
 
     const user = await User.create(req.body);
 
+    
+
     return res.status(200).json({
       success: true,
       message: " Data Successfully Uploaded",

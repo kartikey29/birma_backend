@@ -1,9 +1,11 @@
 const Coupons = require('../model/coupons.Model');
+const io = require('../../socket.io');
 
 
 const createCoupons = async (req, res) => {
     try {
         const createCoupons = await Coupons.create(req.body);
+        io.getIo().emit('ports', { action: 'create', port: createCoupons })
         return res.status(200).json({
             message: "Coupons is created",
             data: createCoupons,
