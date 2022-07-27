@@ -18,7 +18,7 @@ const reviewSchema = new mongoose.Schema(
       min: [1, 'A minimum rating of "1" is required.'],
       max: [5, '"5" is the maximum rating.'],
     },
-    review: String,
+    review: { type: String },
   },
   { timestamps: true }
 );

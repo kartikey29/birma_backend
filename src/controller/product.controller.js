@@ -20,7 +20,6 @@ const refreshProductList = async (req, res) => {
     console.log(deletedCount);
     const { googleSheetsInstance, auth } = await gSheetApiConfig();
 
-
     const readData = await googleSheetsInstance.spreadsheets.values.get({
       auth, //auth object
       spreadsheetId: process.env.spreadsheetId, // spreadsheet id
@@ -97,25 +96,32 @@ const getProductById = async (req, res) => {
     if (!getProduct) {
       throw { message: "product id not found" };
     }
-    return res.send(getProduct);
+    const review = await Review.find({ productId: req.params }).populate({
+      path: "user",
+      select: "firstName lastName -_id",
+    });
+    const rating = totalRating(review);
+    return res.send({ getProduct, rating, review });
   } catch (e) {
     return res.status(504).send(e);
   }
-}
+};
 
 const rateProduct = async (req, res) => {
   try {
-    // console.log(req.body)
     const { role_Id, _id } = req.user;
-    console.log(_id);
-    if (role_Id != '1') {
-      throw { message: "client id not found" };
+    // console.log(_id);
+    if (role_Id != "1") {
+      throw { message: "only client can review" };
     } //check roleid
     const checkProduct = await Product.findById(req.params);
     if (!checkProduct) {
-      throw { message: "productId not found" }
+      throw { message: "productId not found" };
     }
-    const checkProductUser = await Review.findOne({ productId: req.params, user: _id });
+    const checkProductUser = await Review.findOne({
+      productId: req.params,
+      user: _id,
+    });
     if (checkProductUser) {
       throw { message: "already reviewed" };
     }
@@ -123,13 +129,17 @@ const rateProduct = async (req, res) => {
       productId: req.params,
       user: _id,
       rating: req.body.rating,
-      review: req.body.review
+      review: req.body.review,
     });
     return res.send(await saveReview.save());
   } catch (e) {
     return res.status(504).send(e);
   }
-}
+};
 
-
-module.exports = { refreshProductList, getProducts, getProductById, rateProduct };
+module.exports = {
+  refreshProductList,
+  getProducts,
+  getProductById,
+  rateProduct,
+};
