@@ -171,18 +171,23 @@ const deleteAddress = async (req, res, next) => {
   try {
     // console.log(req.user);
     const { _id } = req.user;
-    const checkUser = await Address.findOne({ userId: _id });
-    if (!checkUser) {
-      throw { message: "user doesnt exist" };
+    const checkAddress = await Address.findById(req.body);
+    if (!checkAddress) {
+      throw { message: "Address doesnt exist" };
     }
-    // console.log(checkUser);
-    const delAdd = await Address.findByIdAndRemove(checkUser._id);
-    if (!delAdd) {
-      throw { message: "No address available" };
+    console.log(checkAddress)
+    const clientId = checkAddress.userId.toString();
+    console.log(clientId)
+    const id = _id.toString();
+    if (id != clientId) {
+      throw { message: "clientId didn't match" }
+
     }
+    const delAdd = await Address.findByIdAndRemove(req.body);
     return res
       .status(200)
       .json({ message: "Address deleted successfully", data: delAdd });
+
   } catch (error) {
     return res.status(500).json({
       data: error,
@@ -190,22 +195,29 @@ const deleteAddress = async (req, res, next) => {
   }
 };
 
-const editAddress = async(req,res,next)=>{
-  try{
-    const {_id} = req.user;
-    const editAddress = await Address.findByIdAndUpdate(_id,req.body);
-    if(!editAddress){
-      throw {message:"clientId not found"}
+const editAddress = async (req, res, next) => {
+  try {
+    const { _id } = req.user;
+    console.log(req.user)
+    const findAddress = await Address.findById(req.params);
+    if (!findAddress) {
+      throw { message: "AddressId doesn't exist" }
     }
+    const clientId = findAddress.userId.toString();
+    const id = _id.toString();
+    if (id != clientId) {
+      throw { message: "not matched" };
+    }
+    const updateAddress = await Address.findByIdAndUpdate(req.params, req.body);
     return res.status(200).json({
-      message: "User Address edited  successfully",
-      data: editAddress,
+      message: " Address edited  successfully",
+      data: updateAddress,
     })
-  }catch (error) {
-      return res.status(500).json({
-        message: "Address cannot be deleted",
-        data: error.message,
-      });
+  } catch (error) {
+    return res.status(500).json({
+      //message: "Address cannot be deleted",
+      data: error.message,
+    });
   }
 }
 

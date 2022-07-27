@@ -25,6 +25,7 @@ const userRoute = require("./src/route/user.route");
 const productRoute = require("./src/route/product.route");
 const orderRoute = require('./src/route/order.route');
 const registerRoute=require('./src/route/register.route');
+const couponsRoute = require("./src/route/coupons.route");
 
 // Environment Variable
 const port = process.env.PORT;
@@ -46,6 +47,7 @@ app.use("/api/user", userRoute);
 app.use("/api/product", productRoute);
 app.use("/api/order", orderRoute);
 app.use("/api/register",registerRoute);
+app.use("/api/coupons",couponsRoute);
 
 
 //Restrict Invalid Routes
