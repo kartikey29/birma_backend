@@ -24,7 +24,7 @@ require("dotenv").config({ path: "./config.env" });
 const userRoute = require("./src/route/user.route");
 const productRoute = require("./src/route/product.route");
 const orderRoute = require('./src/route/order.route');
-const registerRoute=require('./src/route/register.route');
+const registerRoute = require('./src/route/register.route');
 const couponsRoute = require("./src/route/coupons.route");
 
 // Environment Variable
@@ -46,8 +46,8 @@ app.use(morgan("dev"));
 app.use("/api/user", userRoute);
 app.use("/api/product", productRoute);
 app.use("/api/order", orderRoute);
-app.use("/api/register",registerRoute);
-app.use("/api/coupons",couponsRoute);
+app.use("/api/register", registerRoute);
+app.use("/api/coupons", couponsRoute);
 
 
 //Restrict Invalid Routes
@@ -61,6 +61,19 @@ app.get("*", (req, res) => {
 /**========================================================================
  *                           Listening Port at 5000
  *========================================================================**/
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`server is starting on port ${port}`);
 });
+const io = require('./socket.io').init(server);
+io.on("connection", (socket) => {
+  //console.log(socket)
+  socket.on('position-change', (data) => {
+    console.log(data)
+    io.emit('postion-change', data)
+  })
+  socket.on('forceDisconnect', function () {
+    socket.disconnect(true);
+  });
+
+})
+

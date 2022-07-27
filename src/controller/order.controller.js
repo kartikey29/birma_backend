@@ -154,7 +154,7 @@ const deleteOrder = async (req, res, next) => {
   }
 };
 
-const cancelOrder = async (req, res, next) => {
+const changeOrderStatus = async (req, res, next) => {
   try {
     const { _id } = req.user;
     const { status } = req.body;
@@ -191,9 +191,8 @@ const cancelOrder = async (req, res, next) => {
 module.exports = {
   getOrderStatus,
   addOrder,
-
   deleteOrder,
   getAllOrders,
-  cancelOrder,
+  changeOrderStatus,
   addDelivery,
 };
