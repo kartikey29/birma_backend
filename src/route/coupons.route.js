@@ -12,4 +12,4 @@ couponsRoute.patch("/updateCoupons/:_id", updateCoupons);
 
 couponsRoute.delete("/deleteCoupons/:_id", deleteCoupons);
 
-module.exports = couponsRoute;
+module.exports = couponsRoute; 
