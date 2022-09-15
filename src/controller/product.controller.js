@@ -16,8 +16,8 @@ const getOptions = (page, sort) => {
 
 const refreshProductList = async (req, res) => {
   try {
-    const deletedCount = await Product.deleteMany({});
-    console.log(deletedCount);
+    // const deletedCount = await Product.deleteMany({});
+    // console.log(deletedCount);
     const { googleSheetsInstance, auth } = await gSheetApiConfig();
 
     const readData = await googleSheetsInstance.spreadsheets.values.get({
