@@ -42,7 +42,7 @@ const refreshProductList = async (req, res) => {
         ProductLink: element[8],
         Images: [
           element[9],
-          element[10],//get image 
+          element[10],//get image  
           element[11],
           element[12],
           element[13],
